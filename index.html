@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Motion graphics for YouTube videos, Shorts and Reels.">
+<link rel="icon" href="logo.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Vidravo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: the user's marquee hero, then a stock-library storefront: category tiles, asset rows, asset detail with download formats, plans */
+:root{
+  --bg:#0a0a0a; --card:#141414; --muted:#1f1f1f; --line:#2a2a2a;
+  --fg:#fafafa; --dim:#a3a3a3; --red:#ef4444; --red-hover:#dc2626; --gold:#fbbf24; --brand:#1e7bff; --cyan:#22d3ee; --ok:#22c55e;
+  --font:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1320px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:768px){.wrap{padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}}
+.ico{width:18px;height:18px;flex:none}
+
+/* ---------- Navigation ---------- */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:70;background:var(--bg)}
+.nav{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);z-index:60;transition:background .3s,border-color .3s;border-bottom:1px solid transparent;background:linear-gradient(to bottom,rgba(10,10,10,.75),rgba(10,10,10,0))}
+.nav.solid{background:rgba(10,10,10,.84);backdrop-filter:saturate(160%) blur(14px);-webkit-backdrop-filter:saturate(160%) blur(14px);border-color:var(--line)}
+.nav-in{height:68px;display:flex;align-items:center;gap:24px}
+.brand{display:flex;align-items:center;flex:none}.brand img{height:30px;width:auto;display:block}
+.primary{display:flex;align-items:center;gap:2px;margin-left:8px}
+.nl{position:relative;display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:8px;font-size:14px;font-weight:500;color:var(--dim);background:none;border:0;cursor:pointer;transition:color .2s,background .2s;white-space:nowrap}
+.nl:hover{color:var(--fg);background:rgba(255,255,255,.05)}
+.nl.on{color:var(--fg)}
+.nl.on::after{content:"";position:absolute;left:12px;right:12px;bottom:-14px;height:2px;border-radius:2px;background:var(--red)}
+.nl .chev{width:14px;height:14px;transition:transform .2s}
+.nl[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.spacer{flex:1}
+.actions{display:flex;align-items:center;gap:8px}
+.icon-btn{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:none;border:0;color:var(--dim);cursor:pointer}
+.icon-btn:hover{background:rgba(255,255,255,.06);color:var(--fg)}
+.searchbar{display:flex;align-items:center;gap:10px;height:40px;width:270px;border:1px solid var(--line);background:rgba(20,20,20,.7);border-radius:10px;padding:0 12px;color:var(--dim);cursor:pointer;font-size:14px}
+.searchbar:hover{border-color:#3a3a3a}.searchbar span{flex:1;text-align:left}
+kbd{font-family:var(--font);font-size:11px;border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--dim);background:var(--muted)}
+.ghost{padding:8px 14px;border-radius:10px;font-size:14px;font-weight:500;white-space:nowrap}.ghost:hover{background:rgba(255,255,255,.06)}
+.pill-btn{background:var(--red);color:#fff;border:0;border-radius:999px;padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s;white-space:nowrap}
+.pill-btn:hover{background:var(--red-hover)}
+.who{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(20,20,20,.7);border-radius:999px;padding:4px 10px 4px 4px;font-size:14px;cursor:pointer}
+.av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--brand),#00c8ff);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
+.plan-tag{border-radius:999px;padding:2px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;background:var(--muted);color:var(--dim)}
+.plan-tag.pro{background:var(--red);color:#fff}.plan-tag.premium{background:var(--gold);color:#000}
+.drop{position:absolute;top:calc(100% + 10px);background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.6);overflow:hidden;animation:pop .18s ease-out;z-index:5}
+.menu{right:0;width:252px}
+.menu .mh{padding:14px 16px;border-bottom:1px solid var(--line)}
+.menu .mh p{margin:0;font-size:14px;font-weight:600}.menu .mh small{color:var(--dim);font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis}
+.mi{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 16px;font-size:14px;background:none;border:0;cursor:pointer}
+.mi:hover{background:var(--muted)}.mi .ico{color:var(--dim);width:16px;height:16px}
+.msep{height:1px;background:var(--line);margin:4px 0}
+.mega{left:0;width:min(700px,calc(100vw - 32px));padding:20px;display:grid;grid-template-columns:220px 1fr;gap:20px}
+.mega .cats{display:flex;flex-direction:column;gap:2px}
+.mega .cats a{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;font-size:14px;color:var(--dim)}
+.mega .cats a:hover,.mega .cats a.hl{background:var(--muted);color:var(--fg)}
+.mega .cats small{font-size:12px;color:var(--dim)}
+.mega .feat p{margin:0 0 10px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--dim)}
+.mega .feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mega .feat-grid a{display:block;font-size:13px;font-weight:500}
+.mega .feat-grid img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;margin-bottom:6px;background:var(--muted)}
+.burger{display:none}
+@media (max-width:1320px){.searchbar{width:auto}.searchbar span,.searchbar kbd{display:none}}
+@media (max-width:900px){.primary,.searchbar,.ghost.desk{display:none}.burger{display:grid}.nav-in{gap:8px}}
+.drawer-bg{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.6);animation:fade .2s}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:81;width:min(340px,88vw);background:var(--card);border-left:1px solid var(--line);display:flex;flex-direction:column;
+  padding:calc(16px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) 20px;animation:slidein .25s ease-out;overflow-y:auto}
+.drawer .dh{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.drawer .dh img{height:26px}
+.dl{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;font-size:16px;font-weight:500}
+.dl:hover,.dl.on{background:var(--muted)}
+.dlabel{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin:18px 12px 6px}
+.dcats{display:flex;flex-wrap:wrap;gap:8px;padding:0 12px}
+.dfoot{margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:20px}
+.sov{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);display:flex;justify-content:center;align-items:flex-start;
+  padding:calc(10vh + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px));animation:fade .15s}
+.sbox{width:min(640px,100%);background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.7);animation:pop .18s ease-out}
+.sinput{display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid var(--line);color:var(--dim)}
+.sinput input{flex:1;min-width:0;height:58px;border:0;background:none;outline:none;font-size:17px;color:var(--fg)}
+.sres{max-height:min(60vh,460px);overflow-y:auto;padding:8px}
+.sr{display:flex;align-items:center;gap:14px;padding:8px 10px;border-radius:10px;cursor:pointer}
+.sr.act,.sr:hover{background:var(--muted)}
+.sr img{width:96px;aspect-ratio:16/9;object-fit:cover;border-radius:6px;flex:none;background:var(--muted)}
+.sr b{display:block;font-size:14px;font-weight:600}.sr small{color:var(--dim);font-size:12px}
+.shint{display:flex;gap:16px;padding:10px 18px;border-top:1px solid var(--line);font-size:12px;color:var(--dim)}
+.sempty{padding:28px;text-align:center;color:var(--dim);font-size:14px}
+
+/* ---------- Hero (AnimatedMarqueeHero) ---------- */
+.hero{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:150px;padding-bottom:72px}
+.hero::before{content:"";position:absolute;left:50%;top:6%;width:min(900px,120vw);aspect-ratio:2/1;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(30,123,255,.28),rgba(139,92,246,.14) 55%,transparent);filter:blur(10px);pointer-events:none;animation:breathe 8s ease-in-out infinite}
+.hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 10%,transparent 65%);mask-image:radial-gradient(ellipse at 50% 30%,#000 10%,transparent 65%);pointer-events:none}
+.hero-copy{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.grad{background:linear-gradient(90deg,#60a5fa,#22d3ee 35%,#a78bfa 70%,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:shine 6s linear infinite}
+.hero-copy{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center}
+.hero-stats{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;margin-top:22px;font-size:13px;color:var(--dim)}.hero-stats b{color:var(--fg);font-weight:600}
+.tagline{margin-bottom:16px;display:inline-block;border:1px solid var(--line);background:rgba(20,20,20,.5);backdrop-filter:blur(4px);border-radius:999px;padding:6px 16px;font-size:14px;font-weight:500;color:var(--dim)}
+.hero h1{margin:0;font-size:clamp(46px,7.2vw,76px);line-height:1;font-weight:700;letter-spacing:-.055em;text-wrap:balance}
+.hero h1 .ln{display:block}.hero h1 .w{display:inline-block}
+.hero p{margin:24px 0 0;max-width:36rem;font-size:18px;line-height:1.6;color:var(--dim)}
+.cta{margin-top:32px;padding:12px 32px;border-radius:999px;border:0;background:var(--red);color:#fff;font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 10px 25px -5px rgba(0,0,0,.5);transition:transform .2s cubic-bezier(.3,1.5,.6,1),background .2s}
+.cta:hover{background:var(--red-hover);transform:scale(1.05)}.cta:active{transform:scale(.95)}
+.up{animation:up .9s cubic-bezier(.2,.9,.25,1.05) both}
+.marquee{position:relative;z-index:5;width:100%;margin-top:36px;padding-block:20px 36px;-webkit-mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent)}
+.mtrack{display:flex;width:max-content;align-items:center;padding-block:28px;animation:slide 60s linear infinite}
+.mcard{position:relative;flex:none;aspect-ratio:3/4;height:400px;margin-right:18px;border-radius:18px;transform:rotate(var(--r));overflow:hidden;box-shadow:0 20px 50px -12px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.08);background:var(--muted);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.mcard:hover{transform:rotate(0deg) translateY(-6px) scale(1.04);z-index:2}
+.mtrack:hover{animation-play-state:paused}
+.mcard span{position:absolute;left:12px;bottom:12px;z-index:2;font-size:12px;font-weight:600;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);border-radius:999px;padding:4px 10px;opacity:0;transform:translateY(4px);transition:.25s}
+.mcard:hover span{opacity:1;transform:none}
+@media (max-width:767px){.mcard{height:260px;margin-right:12px;border-radius:14px}.mtrack{animation-duration:40s;padding-block:16px}}
+.mcard img,.mcard video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+
+/* ---------- Hero carousel ---------- */
+.cf{--w:240px;position:relative;z-index:5;width:100%;margin-top:48px;padding-bottom:8px}
+.cf-stage{position:relative;height:calc(var(--w) * 16 / 9 + 60px);overflow:hidden;padding-top:20px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+.cf-item{position:absolute;left:50%;top:20px;transform-origin:50% 50%;width:var(--w);aspect-ratio:9/16;border-radius:30px;border:5px solid #1c1c22;overflow:hidden;background:#111;cursor:pointer;
+  box-shadow:0 30px 70px -20px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.08);transition:transform .7s cubic-bezier(.2,.8,.2,1),opacity .7s,filter .7s;will-change:transform}
+.cf-item img,.cf-item video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cf-item.on{box-shadow:0 30px 60px -18px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.22),0 0 50px -10px rgba(120,120,255,.35)}
+.cf-item .t{position:absolute;left:12px;top:12px;z-index:2}
+.cf-meta{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:22px;flex-wrap:wrap;padding-inline:16px}
+.cf-meta b{font-size:17px;letter-spacing:-.01em}.cf-meta small{color:var(--dim);font-size:13px}
+.cf-meta a{font-size:14px;font-weight:600;color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:7px 14px}.cf-meta a:hover{background:var(--muted)}
+.cf-btn{position:absolute;top:calc(var(--w) * 16 / 9 + 60px + 8px);z-index:20;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(15,15,18,.7);backdrop-filter:blur(8px);color:#fff;display:grid;place-items:center;cursor:pointer;transition:background .2s,transform .2s}
+.cf-btn:hover{background:rgba(40,40,48,.9);transform:scale(1.06)}
+.cf-prev{left:calc(50% - 330px)}.cf-next{right:calc(50% - 330px)}
+.cf-item::before{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:34%;height:16px;border-radius:10px;background:#000;z-index:3}
+.cf-item .t{top:32px!important}
+.cf-prog{width:120px;height:3px;border-radius:2px;background:rgba(255,255,255,.12);margin:16px auto 0;overflow:hidden}.cf-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--cyan))}.cf-prog i.run{animation:cfbar 4s linear forwards}@keyframes cfbar{to{width:100%}}
+.cf-dots{display:flex;justify-content:center;gap:8px;margin-top:16px}
+.cf-dots button{width:8px;height:8px;border-radius:999px;border:0;background:rgba(255,255,255,.25);cursor:pointer;padding:0;transition:width .3s,background .3s}
+.cf-dots button.on{width:26px;background:var(--fg)}
+@media (max-width:640px){.cf-btn{display:none}.cf{--w:50vw;margin-top:26px}.cf-meta{gap:10px;margin-top:16px}.cf-meta b{font-size:15px;width:100%;text-align:center}.cf-meta a{padding:6px 12px;font-size:13px}
+  .hero{padding-top:108px;min-height:0;padding-bottom:40px}.hero h1{font-size:clamp(36px,10.5vw,46px)}.hero p{font-size:15.5px;margin-top:16px}.tagline{font-size:12.5px;padding:5px 12px}
+  .hero-cta{gap:10px!important}.hero-cta .cta{margin-top:22px;padding:11px 20px;font-size:15px}.hero-stats{gap:6px 14px;font-size:12px;margin-top:16px}
+  .cmp{min-width:0!important;font-size:12.5px}.cmp th,.cmp td{padding:10px 6px!important}.cmp th:first-child,.cmp td:first-child{width:46%}.page{padding-top:96px!important}
+  .steps{padding-top:44px!important}.step{padding:18px!important}.rows{gap:40px!important}.sec-h h2{font-size:20px!important}.ai-promo .ai-card{display:none}}
+
+/* ---------- AI ---------- */
+.ai-badge{font-size:10px;font-weight:700;letter-spacing:.06em;background:linear-gradient(90deg,var(--brand),#a78bfa);color:#fff;border-radius:6px;padding:1px 6px;margin-left:2px}
+.ai-hero{position:relative;border:1px solid var(--line);border-radius:20px;padding:clamp(20px,4vw,40px);background:radial-gradient(120% 120% at 0% 0%,rgba(30,123,255,.18),transparent 50%),radial-gradient(120% 120% at 100% 100%,rgba(167,139,250,.16),transparent 50%),var(--card);overflow:hidden}
+.ai-form{display:grid;gap:14px;margin-top:24px}
+.ai-form textarea{width:100%;min-height:120px;resize:vertical;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:14px;font-size:15px;color:var(--fg);outline:none;font-family:inherit}
+.ai-form textarea:focus{box-shadow:0 0 0 2px var(--brand)}
+.seg{display:inline-flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:none;border-radius:999px;padding:7px 14px;font-size:13px;color:var(--dim);cursor:pointer}
+.seg button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.ai-out{margin-top:28px;display:grid;gap:16px}
+.ai-card{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--bg)}
+.ai-card h3{margin:0 0 10px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:600}
+.ai-line{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}.ai-line:first-of-type{border-top:0}
+.ai-line p{margin:0;font-size:15px}
+.copy{flex:none;border:1px solid var(--line);background:none;border-radius:8px;padding:4px 10px;font-size:12px;color:var(--dim);cursor:pointer}.copy:hover{color:var(--fg)}
+.pick{display:grid;grid-template-columns:64px 150px minmax(0,1fr);gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.pick:first-of-type{border-top:0}
+.pick .at{font-variant-numeric:tabular-nums;font-weight:600;color:var(--cyan)}
+.pick img{width:150px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:var(--muted)}
+.pick b{display:block;font-size:14px}.pick small{color:var(--dim);font-size:13px;display:block}
+@media (max-width:560px){.pick{grid-template-columns:52px minmax(0,1fr)}.pick img{display:none}}
+.shimmer{height:14px;border-radius:7px;background:linear-gradient(90deg,var(--muted),#2a2a2a,var(--muted));background-size:200% 100%;animation:shim 1.2s linear infinite;margin:10px 0}
+@keyframes shim{to{background-position:-200% 0}}
+.ai-lock{text-align:center;padding:28px 16px}
+.ai-promo{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center}
+@media (max-width:860px){.ai-promo{grid-template-columns:1fr}}
+
+/* ---------- Customizer ---------- */
+.cust{margin-top:28px;border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.5vw,24px);background:var(--card)}
+.cust-h{display:flex;align-items:center;gap:10px}.cust-h h2{margin:0;font-size:20px;letter-spacing:-.02em}
+.cust-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.cust-grid{grid-template-columns:1fr}}
+.cust-stage{border-radius:12px;overflow:hidden;border:1px solid var(--line)}.cust-stage canvas{display:block;width:100%;height:auto}
+.cust-stage.vert{max-width:280px;margin:0 auto;width:100%}
+.bg-studio{background:radial-gradient(circle at 50% 45%,#202638,#090a0f)}.bg-green{background:#00B140}.bg-full{background:#000}
+.bg-checker{background-color:#2b2b2b;background-image:linear-gradient(45deg,#3a3a3a 25%,transparent 25%,transparent 75%,#3a3a3a 75%),linear-gradient(45deg,#3a3a3a 25%,transparent 25%,transparent 75%,#3a3a3a 75%);background-size:24px 24px;background-position:0 0,12px 12px}
+.cust-side{display:flex;flex-direction:column;gap:12px;min-width:0}.cust-ex{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.edit-badge{position:absolute;right:8px;bottom:8px;z-index:2;background:rgba(30,123,255,.9);color:#fff;border-radius:6px;padding:1px 7px;font-size:10px;font-weight:600}
+
+/* ---------- Home sections ---------- */
+.rows{display:flex;flex-direction:column;gap:56px;padding-block:24px 64px}
+.sec-h{display:flex;justify-content:space-between;align-items:end;margin-bottom:16px;gap:12px}
+.sec-h h2{margin:0;font-size:clamp(20px,2.4vw,26px);font-weight:700;letter-spacing:-.03em}
+.sec-h a{font-size:14px;color:var(--dim)}.sec-h a:hover{color:var(--fg)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;padding-top:64px}
+.step{border:1px solid var(--line);border-radius:16px;padding:22px;background:linear-gradient(180deg,#121212,#0d0d0d)}
+.step .n{width:30px;height:30px;border-radius:50%;background:var(--muted);display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--fg)}
+.step h3{margin:14px 0 4px;font-size:17px;letter-spacing:-.02em}.step p{margin:0;color:var(--dim);font-size:14px}
+.fmt-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.fmt{font-size:11px;font-weight:600;border:1px solid var(--line);border-radius:6px;padding:2px 8px;color:var(--dim)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.tile{position:relative;aspect-ratio:16/10;border-radius:14px;overflow:hidden;background:var(--muted);display:flex;align-items:flex-end;padding:14px}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.tile:hover img{transform:scale(1.06)}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85),rgba(0,0,0,.05) 65%)}
+.tile b{position:relative;z-index:1;font-size:16px;letter-spacing:-.01em}.tile small{position:relative;z-index:1;display:block;color:#cfcfcf;font-size:12px}
+.tile div{position:relative;z-index:1}
+
+/* ---------- Asset cards ---------- */
+.scroller{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;scrollbar-width:none}
+.scroller::-webkit-scrollbar{display:none}
+.scroller .acard{width:300px;flex:none;scroll-snap-align:start}
+@media (max-width:640px){.scroller .acard{width:250px}}
+.acard{display:block;min-width:0}
+.thumb{position:relative;aspect-ratio:16/9;max-width:100%;border-radius:12px;overflow:hidden;background:var(--muted);transition:box-shadow .2s}
+.acard:hover .thumb{box-shadow:0 0 0 2px var(--red)}
+.thumb img,.thumb video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.tier{position:absolute;left:8px;top:8px;z-index:2;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tier.free{background:rgba(0,0,0,.65);color:#fff}.tier.pro{background:var(--red);color:#fff}.tier.premium{background:var(--gold);color:#000}
+.kind{position:absolute;right:8px;top:8px;z-index:2;background:rgba(0,0,0,.65);color:#fff;border-radius:6px;padding:2px 7px;font-size:10px;font-weight:600}
+.dur{position:absolute;right:8px;bottom:8px;z-index:2;background:rgba(0,0,0,.75);color:#fff;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:500;font-variant-numeric:tabular-nums}
+.alpha-badge{position:absolute;left:8px;bottom:8px;z-index:2;background:rgba(0,0,0,.75);color:var(--cyan);border-radius:6px;padding:1px 6px;font-size:10px;font-weight:600}
+.acard h3{margin:10px 0 0;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acard small{display:block;margin-top:2px;font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thumb.vert video{object-fit:contain;background:#000}
+.stage.vert{aspect-ratio:auto;height:min(72vh,720px);max-width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:28px 20px}
+
+/* ---------- Pages ---------- */
+.page{padding-top:116px;padding-bottom:80px}
+.h-xl{margin:0;font-size:clamp(36px,5.6vw,60px);font-weight:700;letter-spacing:-.05em;line-height:1.05}
+.sub{color:var(--dim);margin:12px 0 0}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 16px;font-size:14px;font-weight:500;color:var(--dim);cursor:pointer;white-space:nowrap;flex:none}
+.chip:hover{color:var(--fg)}.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.toolbar{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;margin-top:28px}
+.empty{border:1px dashed var(--line);border-radius:16px;padding:48px;text-align:center;color:var(--dim)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:10px 24px;font-weight:600;font-size:15px;cursor:pointer;border:1px solid var(--line);background:transparent;transition:background .2s;color:var(--fg)}
+.btn:hover{background:var(--muted)}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff}.btn.red:hover{background:var(--red-hover)}
+.btn:disabled{opacity:.6;cursor:default}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+.label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:0}
+.crumbs{display:flex;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--dim);margin-bottom:12px}.crumbs a:hover{color:var(--fg)}
+
+/* Asset detail */
+.detail{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:32px;align-items:start}
+@media (max-width:980px){.detail{grid-template-columns:1fr}}
+.stage{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000;border:1px solid var(--line)}
+.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.stage.checker{background-color:#2b2b2b;background-image:linear-gradient(45deg,#3a3a3a 25%,transparent 25%,transparent 75%,#3a3a3a 75%),linear-gradient(45deg,#3a3a3a 25%,transparent 25%,transparent 75%,#3a3a3a 75%);background-size:28px 28px;background-position:0 0,14px 14px}
+.stage.checker video{background:transparent}
+.wm{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;overflow:hidden}
+.wm span{transform:rotate(-18deg);font-size:clamp(28px,5vw,64px);font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.16);white-space:nowrap}
+.view-tabs{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.view-tabs button{border:1px solid var(--line);background:none;border-radius:8px;padding:6px 12px;font-size:13px;color:var(--dim);cursor:pointer}
+.view-tabs button.on{border-color:var(--fg);color:var(--fg)}
+.side h1{margin:6px 0 0;font-size:clamp(26px,3vw,34px);letter-spacing:-.04em;line-height:1.1}
+.side p{color:var(--dim);margin:10px 0 0;font-size:14px}
+.specs{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:20px 0;font-size:14px}
+.specs dt{color:var(--dim)}.specs dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.dlbtn{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;margin-top:8px;transition:border-color .2s,background .2s}
+.dlbtn:hover{border-color:#444;background:#111}
+.dlbtn b{display:block;font-size:14px}.dlbtn small{color:var(--dim);font-size:12px}
+.dlbtn .go{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--red);color:#fff}
+.dlbtn.locked .go{background:var(--muted);color:var(--dim)}
+.status{margin:12px 0 0;font-size:13px;border-radius:10px;padding:10px 12px}
+.status.ok{background:rgba(34,197,94,.1);color:#86efac}.status.bad{background:rgba(239,68,68,.1);color:#fca5a5}.status.info{background:rgba(30,123,255,.1);color:#93c5fd}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.tags a{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--dim)}.tags a:hover{color:var(--fg)}
+.license{font-size:13px;color:var(--dim);border-top:1px solid var(--line);margin-top:20px;padding-top:16px}
+.license b{color:var(--fg)}
+
+/* Auth */
+.auth{min-height:100vh;display:grid;place-items:center;padding-top:100px;padding-bottom:64px}
+.auth-box{width:100%;max-width:384px}
+.auth h1{text-align:center;margin:0;font-size:30px;letter-spacing:-.04em}.auth .sub{text-align:center;font-size:14px}
+form.panel{margin-top:32px;display:flex;flex-direction:column;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500}
+.field input{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:10px 14px;font-size:14px;outline:none;font-weight:400}
+.field input:focus{box-shadow:0 0 0 2px var(--red)}
+.field small{color:var(--dim);font-weight:400;font-size:12px}
+.err{background:rgba(239,68,68,.1);color:#f87171;border-radius:8px;padding:8px 12px;font-size:14px;margin:0}
+.swap{text-align:center;color:var(--dim);font-size:14px;margin-top:24px}
+.swap a{color:var(--fg);text-decoration:underline;text-underline-offset:4px;font-weight:500}
+
+/* Pricing */
+.toggle{display:inline-flex;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px;margin-top:32px;font-size:14px}
+.toggle button{border:0;background:none;border-radius:999px;padding:8px 20px;font-weight:500;color:var(--dim);cursor:pointer}
+.toggle button.on{background:var(--fg);color:var(--bg)}
+.toggle em{font-style:normal;color:#f87171;font-size:12px;margin-left:6px}.toggle button.on em{color:var(--red)}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;margin-top:48px}
+.plan{position:relative;display:flex;flex-direction:column;border:1px solid var(--line);background:rgba(20,20,20,.5);border-radius:16px;padding:28px}
+.plan.hot{border-color:var(--red);background:var(--card);box-shadow:0 0 60px -20px rgba(239,68,68,.4)}
+.plan .badge{position:absolute;top:-12px;left:28px;background:var(--red);color:#fff;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600}
+.plan h2{margin:0;font-size:18px}.plan .blurb{color:var(--dim);font-size:14px;margin:4px 0 0}
+.price{font-size:40px;font-weight:700;letter-spacing:-.03em;margin:24px 0 0}.price span{font-size:15px;font-weight:400;color:var(--dim)}
+.feats{list-style:none;margin:24px 0 32px;padding:0;display:flex;flex-direction:column;gap:12px;flex:1;font-size:14px;color:var(--dim)}
+.feats li{display:flex;gap:10px}
+.feats li::before{content:"";flex:none;width:10px;height:5px;border-left:2px solid var(--red);border-bottom:2px solid var(--red);transform:rotate(-45deg);margin-top:6px}
+.cmp{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+.cmp th,.cmp td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:center}
+.cmp th:first-child,.cmp td:first-child{text-align:left;color:var(--dim)}
+.cmp thead th{font-size:13px}
+.faq{max-width:768px;margin:80px auto 0}.faq h2{font-size:24px;letter-spacing:-.03em;margin:0}
+.faq details{border-bottom:1px solid var(--line);padding-block:20px}
+.faq summary{cursor:pointer;list-style:none;font-weight:500;display:flex;justify-content:space-between;gap:12px}
+.faq summary::after{content:"+";color:var(--dim)}.faq details[open] summary::after{content:"–"}
+.faq details p{color:var(--dim);font-size:14px;margin:12px 0 0}
+
+/* Checkout & account */
+.co{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:40px}
+@media (max-width:860px){.co{grid-template-columns:1fr}}
+.opt{display:block;border:1px solid var(--line);border-radius:12px;padding:16px;text-align:left}
+.opt.on{border-color:var(--red);background:rgba(239,68,68,.05)}
+.opt b{display:block;text-transform:capitalize}.opt span{font-size:14px;color:var(--dim)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
+.sum-row{display:flex;justify-content:space-between;font-size:14px;margin-top:12px;font-variant-numeric:tabular-nums}
+.sum-row.tot{border-top:1px solid var(--line);padding-top:12px;font-weight:600}
+.note{font-size:12px;color:var(--dim);margin:16px 0 0}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:32px}
+.meter{height:8px;border-radius:4px;background:var(--muted);overflow:hidden;margin-top:10px}.meter i{display:block;height:100%;background:var(--brand);border-radius:4px}
+.confirm{margin-top:16px;border:1px solid rgba(239,68,68,.4);background:rgba(239,68,68,.05);border-radius:12px;padding:16px;font-size:14px}
+.done{min-height:100vh;display:grid;place-items:center;text-align:center;padding-top:68px}
+.big-ico{width:64px;height:64px;border-radius:50%;background:var(--red);display:grid;place-items:center;margin:0 auto;color:#fff}
+.hist{width:100%;border-collapse:collapse;font-size:14px;min-width:480px}
+.hist td,.hist th{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}.hist th{color:var(--dim);font-weight:500;font-size:13px}
+.scroll-x{overflow-x:auto}
+
+/* Teaser & footer */
+.teaser{border-top:1px solid var(--line);padding-block:80px;text-align:center}
+.teaser h2{margin:0;font-size:clamp(30px,4.4vw,48px);letter-spacing:-.05em}
+footer{border-top:1px solid var(--line);padding-block:56px 32px;color:var(--dim);font-size:14px}
+.fgrid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:32px}
+@media (max-width:760px){.fgrid{grid-template-columns:1fr 1fr}}
+.fgrid img{height:28px;width:auto;display:block;margin-bottom:12px}
+.fgrid h4{margin:0 0 12px;color:var(--fg);font-size:13px;font-weight:600}
+.fgrid a{display:block;padding:4px 0}.fgrid a:hover{color:var(--fg)}
+.fbot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;border-top:1px solid var(--line);margin-top:40px;padding-top:24px;font-size:12px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:95;background:var(--fg);color:var(--bg);border-radius:999px;padding:10px 18px;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:pop .2s}
+
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes slide{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+@keyframes breathe{50%{opacity:.7;transform:translateX(-50%) scale(1.08)}}
+@keyframes shine{to{background-position:-200% 0}}
+@keyframes pop{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1}}
+@keyframes fade{from{opacity:0}}
+@keyframes slidein{from{transform:translateX(100%)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#home" aria-label="Vidravo home"><img src="logo.png" alt="Vidravo"></a>
+    <nav class="primary" aria-label="Main">
+      <div style="position:relative" id="catWrap">
+        <button class="nl" id="catBtn" aria-expanded="false" aria-haspopup="true">Explore <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+      </div>
+      <a class="nl" href="#motion" data-r="motion">All animations</a>
+      <a class="nl" href="#browse-overlays" data-r="overlays">Overlays</a>
+      <a class="nl" href="#browse-shortsreels" data-r="shortsreels">Shorts &amp; Reels</a>
+      <a class="nl" href="#ai" data-r="ai">✦ AI <span class="ai-badge">PRO</span></a>
+      <a class="nl" href="#pricing" data-r="pricing">Pricing</a>
+    </nav>
+    <div class="spacer"></div>
+    <div class="actions">
+      <button class="searchbar" id="openSearch" aria-label="Search the library"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search animations</span><kbd>/</kbd></button>
+      <div id="authSlot" class="actions"></div>
+      <button class="icon-btn burger" id="burger" aria-label="Open menu"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div><img src="logo.png" alt="Vidravo"><p style="margin:0;max-width:32ch">Motion graphics for YouTube videos, reels and lessons.</p></div>
+      <div><h4>Library</h4><a href="#motion">All animations</a><a href="#browse-shortsreels">Shorts &amp; Reels</a><a href="#browse-overlays">Overlays</a><a href="#browse-transitions">Transitions</a><a href="#browse-backgrounds">Backgrounds</a></div>
+      <div><h4>Account</h4><a href="#signin">Sign in</a><a href="#signup">Create account</a><a href="#account">Downloads</a><a href="#saved">Saved</a></div>
+      <div><h4>Company</h4><a href="#pricing">Pricing</a><a href="#license">License</a><a href="#pricing">FAQ</a></div>
+    </div>
+    <div class="fbot"><span>© 2026 Vidravo</span><span>Every animation is made by the Vidravo studio.</span></div>
+  </div>
+</footer>
+
+<script>
+(() => {
+/* ---------------- library ---------------- */
+const SRC={vidravo:"Vidravo Studio",mdn:"MDN Web Docs · CC0",chromium:"The Chromium Project · BSD",opencv:"OpenCV · Apache 2.0"};
+const M=(id,t,c,tier,d,o={})=>({id,t,c,tier,d,type:"motion",src:"vidravo",vert:!!o.vert,res:o.vert?"720×1280 (9:16)":"1280×720",fps:25,poster:`mg/${id}.jpg`,file:`mg/${id}.mp4`,
+  overlay:!!o.overlay,loop:!!o.loop,desc:o.desc,tags:o.tags||[],
+  formats:o.overlay?[...(o.noMov?[]:[{k:"mov",label:"ProRes 4444 MOV",note:"Transparent · Premiere, Resolve, Final Cut",f:`mg/${id}.mov`,ext:"mov"}]),{k:"alpha",label:"Transparent WebM",note:"Transparent · web and browser editors",f:`mg/${id}-alpha.webm`,ext:"webm"},{k:"green",label:"Green screen MP4",note:"Key out in any editor",f:`mg/${id}-green.mp4`,ext:"mp4"},{k:"mp4",label:"Preview MP4",note:"On a dark studio background",f:`mg/${id}.mp4`,ext:"mp4"}]
+    :[{k:"mp4",label:"MP4 · H.264",note:"Works in every editor",f:`mg/${id}.mp4`,ext:"mp4"}]});
+const F=(id,f,t,c,tier,d,src,desc,tags)=>({id,t,c,tier,d,type:"footage",src,res:"854×480",fps:25,poster:`footage/${f}.jpg`,file:`footage/${f}.mp4`,desc,tags,
+  formats:[{k:"mp4",label:"MP4 · H.264",note:"Works in every editor",f:`footage/${f}.mp4`,ext:"mp4"}]});
+const A=[
+  M("subscribe-bell","Subscribe button with bell","Overlays","pro",5,{overlay:true,desc:"A clean subscribe button pops in, gets clicked, flips to Subscribed and rings the bell. Drop it over your talking-head shot.",tags:["youtube","subscribe","call to action","button"]}),
+  M("lower-third-clean","Clean name lower third","Lower thirds","free",5,{overlay:true,desc:"Name and role slide in with an accent stripe and slide out again. Made for interviews and vlogs.",tags:["name title","interview","vlog"]}),
+  M("countdown-5","5-second countdown","Education","free",6,{desc:"A glowing ring counts down from five and ends on GO. Use it before reveals, quizzes and live streams.",tags:["timer","countdown","intro"]}),
+  M("title-reveal","Chapter title reveal","Titles","pro",5,{desc:"A chapter label and a bold title rise into place over drifting colour, with an underline and subtitle.",tags:["chapter","title card","lesson"]}),
+  M("gradient-loop","Soft gradient loop","Backgrounds","free",6,{loop:true,desc:"Blue, violet and pink light drifting slowly. Loops seamlessly behind titles and talking points.",tags:["background","loop","gradient"]}),
+  M("aurora-loop","Aurora glow loop","Backgrounds","pro",6,{loop:true,desc:"Green and blue light moving like an aurora. A calm loop for intros, podcasts and music.",tags:["background","loop","aurora"]}),
+  M("plexus-network","Plexus network loop","Backgrounds","premium",6,{loop:true,desc:"Glowing points connect and drift in a dark field. Ideal for tech, AI and data topics.",tags:["tech","network","loop","ai"]}),
+  M("swipe-transition","Diagonal swipe transition","Transitions","pro",2.2,{overlay:true,desc:"Three diagonal bands sweep across to hide a cut and reveal the next scene.",tags:["transition","wipe","cut"]}),
+  M("bar-chart","Animated bar chart","Education","pro",5,{desc:"Bars grow one by one with counting labels. Swap in your own story about growth or results.",tags:["infographic","chart","data"]}),
+  M("social-handle","Social handle pop-up","Overlays","pro",5,{overlay:true,desc:"Your handle types itself into a pill with a play icon and a Follow for more tag.",tags:["social","handle","follow"]}),
+  M("callout-arrow","Hand-drawn circle and arrow","Overlays","premium",4,{overlay:true,desc:"A marker circle and arrow draw themselves to point at anything on screen, with a Click here label.",tags:["tutorial","highlight","arrow","screen recording"]}),
+  M("loading-bar","Loading progress bar","Education","free",4.5,{desc:"A striped progress bar fills to 100 percent and finishes with a check mark.",tags:["progress","loading","ui"]}),
+  M("quiz-reveal","Quiz question with answer reveal","Education","premium",6,{desc:"A question and four answers animate in, a timer runs out and the correct answer lights up.",tags:["quiz","classroom","reels","education"]}),
+  M("captions-pop","Word-by-word captions","Shorts & Reels","free",4.5,{vert:true,overlay:true,desc:"Bold white captions appear word by word, with the spoken word popping in yellow. The caption style used on most viral Shorts.",tags:["captions","subtitles","shorts","reels","tiktok"]}),
+  M("follow-tap","Follow button tap","Shorts & Reels","free",4,{vert:true,overlay:true,desc:"Your profile card pops up, a cursor taps Follow and it switches to Following with a burst of hearts.",tags:["follow","shorts","reels","call to action"]}),
+  M("link-in-bio","Link in bio","Shorts & Reels","free",4,{vert:true,overlay:true,desc:"A Link in bio pill with bouncing arrows pointing down to your profile.",tags:["link in bio","reels","tiktok","call to action"]}),
+  M("wait-for-it","Wait for it","Shorts & Reels","pro",3.5,{vert:true,overlay:true,desc:"A shaking WAIT FOR IT sticker with eyes and a progress bar that builds suspense before the payoff.",tags:["wait for it","suspense","shorts","meme"]}),
+  M("part-two","Part 2 stamp","Shorts & Reels","pro",3.5,{vert:true,overlay:true,desc:"PART 2 slams onto the screen with a Follow for part 3 tag. Made for series content.",tags:["part 2","series","reels","shorts"]}),
+  M("reply-comment","Reply to comment bubble","Shorts & Reels","pro",4,{vert:true,overlay:true,desc:"A comment-reply sticker that types out the viewer question you're answering in the video.",tags:["comment","reply","tiktok","reels"]}),
+  M("notify-milestone","Milestone notification","Shorts & Reels","premium",4.5,{vert:true,overlay:true,desc:"A phone-style notification drops in announcing 10,000 subscribers, with party emojis falling.",tags:["notification","milestone","celebration","subscribers"]}),
+  M("emoji-rain","Floating emoji reactions","Shorts & Reels","free",5,{vert:true,overlay:true,loop:true,desc:"Hearts, laughing faces and fire emojis float up the side like live reactions. Loops seamlessly.",tags:["emoji","reactions","live","hearts"]}),
+  M("confetti-burst","Confetti burst","Shorts & Reels","pro",3.5,{vert:true,overlay:true,desc:"Colourful confetti bursts from both sides and rains down. Perfect for reveals and wins.",tags:["confetti","celebration","win","reveal"]}),
+  M("end-screen","Thanks for watching end screen","End screens","free",6,{desc:"Thanks for watching with two video slots and a subscribe button, laid out for YouTube end-screen elements.",tags:["end screen","outro","youtube","subscribe"]}),
+  M("light-leak","Light leak transition","Transitions","pro",2.4,{overlay:true,desc:"Warm orange and pink light sweeps across the frame to soften a cut. Set the layer to Screen.",tags:["light leak","transition","film","warm"]}),
+  M("checklist","Animated checklist","Education","free",5,{desc:"Four items slide in and get ticked off one by one. Great for tips, steps and recaps.",tags:["checklist","tips","steps","list"]}),
+  M("before-after","Before and after slider","Overlays","pro",4.5,{overlay:true,desc:"A divider with Before and After labels slides back and forth. Put two clips underneath to compare.",tags:["before after","comparison","slider","transformation"]}),
+  M("travel-route","Travel route map","Maps","pro",4.5,{desc:"Pins drop on New York and Tokyo and a dotted route flies between them across a real world map.",tags:["map","travel","route","vlog"]}),
+  M("map-flight","Flight path with plane","Maps","pro",4.8,{desc:"A plane flies from Los Angeles to Paris along a glowing arc, with a flight-time label.",tags:["map","flight","plane","travel"]}),
+  M("map-pin-zoom","Zoom to location pin","Maps","free",4.5,{desc:"The world map zooms in, a pin drops with a pulse and a Your location card pops up.",tags:["map","location","pin","zoom"]}),
+  M("map-multi-stop","World tour multi-stop route","Maps","premium",5.2,{desc:"Five numbered stops connect one by one from London to Sydney. Great for travel recaps.",tags:["map","route","travel","itinerary"]}),
+  M("map-globe","Spinning globe with connections","Maps","premium",8,{loop:true,desc:"A dotted 3D globe turns while golden arcs link cities around the world. Loops seamlessly.",tags:["globe","world","network","loop"]}),
+  M("lower-third-gradient","Gradient pill lower third","Lower thirds","pro",5,{overlay:true,desc:"A gradient pill with an initials badge grows out, then your name and title slide up inside it.",tags:["name title","interview","podcast"]}),
+  M("lower-third-minimal","Minimal line lower third","Lower thirds","free",5,{overlay:true,desc:"A thin line draws across while your name rises above it and your title drops in below.",tags:["name title","minimal","documentary"]}),
+  M("title-neon","Neon sign title","Titles","pro",4.5,{desc:"COMING SOON flickers on in pink and blue neon over a dark brick wall.",tags:["neon","coming soon","intro","teaser"]}),
+  M("title-top5","Top 5 countdown title","Titles","free",4,{desc:"A big TOP 5 stamps in over turning rays, with a red banner for your topic.",tags:["top 5","list","countdown","intro"]}),
+  M("transition-circle","Circle zoom transition","Transitions","pro",2,{overlay:true,desc:"Two circles grow from the center to cover the cut, then open up to reveal the next shot.",tags:["transition","circle","zoom"]}),
+  M("transition-blinds","Colour blinds transition","Transitions","free",1.9,{overlay:true,desc:"Six coloured panels drop in from alternating sides and slide away to the next scene.",tags:["transition","blinds","colourful"]}),
+  M("like-comment-share","Like, comment and share buttons","Overlays","free",4,{overlay:true,desc:"Like, Comment and Share pop in, the cursor clicks Like and it turns blue.",tags:["like","comment","share","call to action"]}),
+  M("live-badge","LIVE badge with viewer count","Overlays","pro",4,{overlay:true,desc:"A blinking LIVE badge with a viewer count that climbs. Place it in the top corner of streams.",tags:["live","stream","badge","viewers"]}),
+  M("bokeh-loop","Warm bokeh particles loop","Backgrounds","free",6,{loop:true,desc:"Soft golden light circles float up through the frame. A cosy loop for intros and quotes.",tags:["bokeh","particles","loop","warm"]}),
+  M("edu-timeline","Four-step timeline","Education","pro",5,{desc:"A progress line runs through four numbered steps that pop in with a label and a short note.",tags:["timeline","steps","process","lesson"]})
+];
+const SCENE={"captions-pop":"black bear, The Chromium Project (BSD)","follow-tap":"tulip festival, The Chromium Project (BSD)","link-in-bio":"tulip festival, The Chromium Project (BSD)","wait-for-it":"black bear, The Chromium Project (BSD)","part-two":"tulip festival, The Chromium Project (BSD)","reply-comment":"rose bud, MDN Web Docs (CC0)","notify-milestone":"tulip festival, The Chromium Project (BSD)","emoji-rain":"tulip festival, The Chromium Project (BSD)","confetti-burst":"rose bud, MDN Web Docs (CC0)","light-leak":"tulip festival, The Chromium Project (BSD)","before-after":"tulip festival, The Chromium Project (BSD)","lower-third-clean":"tulip festival, The Chromium Project (BSD)","lower-third-gradient":"tulip festival, The Chromium Project (BSD)","lower-third-minimal":"rose bud, MDN Web Docs (CC0)","subscribe-bell":"white rabbit, MDN Web Docs (CC0)","social-handle":"rose bud, MDN Web Docs (CC0)","like-comment-share":"tulip festival, The Chromium Project (BSD)","live-badge":"tulip festival, The Chromium Project (BSD)","swipe-transition":"MDN Web Docs (CC0)","transition-circle":"MDN Web Docs (CC0)","transition-blinds":"MDN Web Docs (CC0)"};
+const MCATS=["Shorts & Reels","Overlays","Lower thirds","Titles","Transitions","End screens","Backgrounds","Education","Maps"];
+const FCATS=[];
+const slug=c=>c.toLowerCase().replace(/[^a-z0-9]+/g,"");
+const PLANS=[
+  {id:"free",name:"Free",m:0,y:0,blurb:"Try the library with free assets.",f:["Every Free animation","5 downloads a month","MP4 downloads","Use in YouTube and social videos"]},
+  {id:"pro",name:"Pro",m:9.99,y:96,blurb:"For creators who publish every week.",f:["Everything in Free","All Pro animations","Unlimited downloads","ProRes 4444, green screen and transparent files","Customize text and export your own version","Vidravo AI video planner","Commercial license, no credit needed"],hot:true},
+  {id:"premium",name:"Studio",m:24.99,y:240,blurb:"For teams, agencies and educators.",f:["Everything in Pro","Studio-exclusive animations","3 team seats","Extended license for client work","One custom animation request a month"]}
+];
+const RANK={free:0,pro:1,premium:2},FREE_LIMIT=5;
+const plan=id=>PLANS.find(p=>p.id===id),asset=id=>A.find(a=>a.id===id),tierName=t=>plan(t).name;
+const can=(u,t)=>!!u&&RANK[u.plan]>=RANK[t];
+const fmt=s=>Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0");
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const month=()=>new Date().toISOString().slice(0,7);
+const I={
+  play:'<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+  lock:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  dl:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>',
+  user:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
+  heart:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+  card:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>',
+  out:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12H4m0 0 4-4m-4 4 4 4M14 4h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-5"/></svg>',
+  x:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  home:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+  spark:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></svg>',
+  film:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/></svg>',
+  tag:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12 12 20 4 12V4h8z"/><circle cx="8.5" cy="8.5" r="1.2"/></svg>',
+  search:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'
+};
+
+/* ---------------- accounts (kept in this browser for the preview) ---------------- */
+const mem={};
+const sget=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):(k in mem?mem[k]:d)}catch{return k in mem?mem[k]:d}};
+const sset=(k,v)=>{mem[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+const users=()=>sget("vidravo.users2",{});
+const me=()=>{const s=sget("vidravo.session2",null),u=users();return s&&u[s]?u[s]:null};
+const setSession=e=>sset("vidravo.session2",e);
+function update(fn){const u=me();if(!u)return;const all=users();all[u.email]=fn(u);sset("vidravo.users2",all)}
+async function hash(t){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}catch{return "x"+[...t].reverse().join("")}}
+const usedThisMonth=u=>u.downloads.filter(d=>d.at.slice(0,7)===month()).length;
+
+/* ---------------- downloads ---------------- */
+let dlNS,dlP=null;
+const getDl=()=>dlP||(dlP=(async()=>{for(let i=0;i<60&&!(window.claude&&window.claude.use);i++)await new Promise(r=>setTimeout(r,100));
+  try{return window.claude&&window.claude.use?await window.claude.use("downloads"):null}catch{return null}})());
+function toast(msg){document.querySelector(".toast")?.remove();const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.append(t);setTimeout(()=>t.remove(),2600)}
+
+/* ---------------- templates ---------------- */
+const card=a=>`<a class="acard" href="#asset-${a.id}" data-prev="${a.id}"><div class="thumb${a.vert?" vert":""}"><img src="${a.poster}" alt="" loading="lazy"><span class="tier ${a.tier}">${tierName(a.tier)}</span>${a.overlay?'<span class="alpha-badge">Transparent</span>':""}${CUST[a.id]?'<span class="edit-badge" style="bottom:auto;top:8px;right:8px">✎ Editable</span>':""}${a.vert?'<span class="kind">9:16</span>':""}${CUST[a.id]?"":`<span class="dur">${fmt(a.d)}</span>`}</div><h3>${esc(a.t)}</h3><small>${a.c} · ${a.res}${a.loop?" · Loop":""}</small></a>`;
+const row=(title,list,href)=>list.length?`<section><div class="sec-h"><h2>${title}</h2>${href?`<a href="${href}">See all</a>`:""}</div><div class="scroller">${list.map(card).join("")}</div></section>`:"";
+const feats=f=>`<ul class="feats">${f.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
+const catCount=c=>A.filter(a=>a.c===c).length;
+
+const SLIDES=["map-globe","part-two","aurora-loop","reply-comment","countdown-5","wait-for-it","title-top5","follow-tap","plexus-network","captions-pop","bokeh-loop","confetti-burst","gradient-loop","emoji-rain"];
+function home(){const u=me();
+  return `<section class="hero">
+   <div class="hero-copy">
+    <div class="tagline up">Join over 100,000 happy creators</div>
+    <h1><span class="ln"><span class="w up" style="animation-delay:.1s">Animations</span> <span class="w up" style="animation-delay:.2s">That</span> <span class="w up" style="animation-delay:.3s">Make</span></span><span class="ln"><span class="w up grad" style="animation-delay:.4s">Your</span> <span class="w up grad" style="animation-delay:.5s">Videos</span> <span class="w up grad" style="animation-delay:.6s">Pop</span></span></h1>
+    <p class="up" style="animation-delay:.5s">Subscribe buttons, lower thirds, captions, transitions and maps. Download and drop them into your YouTube videos, Shorts and Reels.</p>
+    <div class="up hero-cta" style="animation-delay:.6s;display:flex;gap:12px;flex-wrap:nowrap;justify-content:center"><button class="cta" id="heroCta">Browse Animations</button><a class="cta" href="#ai" style="background:transparent;border:1px solid var(--line);box-shadow:none">✦ Try Vidravo AI</a></div>
+    <div class="hero-stats up" style="animation-delay:.75s"><span><b>Editable text</b> templates</span><span><b>ProRes 4444</b> + green screen</span><span><b>9:16</b> for Shorts and Reels</span></div>
+   </div>
+  </section>
+  <div class="wrap" style="padding-top:8px">
+   ${row("Trending now",["captions-pop","subscribe-bell","follow-tap","map-globe","lower-third-gradient","title-neon","quiz-reveal","like-comment-share","map-flight","callout-arrow","title-top5"].map(asset),"#motion")}
+  </div>
+  <div class="wrap">
+   <div class="steps">
+    <div class="step"><span class="n">1</span><h3>Find the right moment</h3><p>Subscribe buttons, lower thirds, transitions, quiz cards and looping backgrounds.</p></div>
+    <div class="step"><span class="n">2</span><h3>Download in the format you need</h3><p>Overlays come as ProRes 4444 with transparency, green screen and MP4. Text templates export with your own words.</p><div class="fmt-row"><span class="fmt">ProRes 4444</span><span class="fmt">Green screen</span><span class="fmt">MP4</span><span class="fmt">PNG sequence</span></div></div>
+    <div class="step"><span class="n">3</span><h3>Drop it into your editor</h3><p>ProRes and PNG sequences for Premiere, Resolve and Final Cut. MP4 and green screen for CapCut, Canva and phone editors.</p></div>
+   </div>
+  </div>
+  <div class="wrap" style="padding-top:72px"><div class="ai-hero ai-promo"><div><span class="ai-badge">PRO</span><h2 style="margin:12px 0 0;font-size:clamp(28px,3.6vw,40px);letter-spacing:-.04em;line-height:1.1">Not sure what to add? <span class="grad">Ask Vidravo AI.</span></h2><p class="sub">Describe your video and get a hook, a title, captions and a timeline of the exact animations to use.</p><a class="btn red" href="#ai" style="margin-top:20px">✦ Plan a video with AI</a></div>
+   <div class="ai-card"><h3>“60-second Reel about my trip to Japan”</h3><div class="pick"><span class="at">0:00</span><img src="${asset("title-neon").poster}" alt=""><div><b>Hook title</b><small>“7 days in Japan for $900”</small></div></div><div class="pick"><span class="at">0:03</span><img src="${asset("map-flight").poster}" alt=""><div><b>Flight path with plane</b><small>Home to Tokyo</small></div></div><div class="pick"><span class="at">0:52</span><img src="${asset("follow-tap").poster}" alt=""><div><b>Follow button tap</b><small>Ask for the follow</small></div></div></div></div></div>
+  <div class="wrap rows" style="padding-top:64px">
+   ${u&&u.downloads.length?row("Your recent downloads",[...new Set(u.downloads.map(d=>d.id))].map(asset).filter(Boolean).slice(0,10),"#account"):""}
+   ${row("For Shorts and Reels",A.filter(a=>a.c==="Shorts & Reels"),"#browse-shortsreels")}
+   ${row("New this week",["map-flight","map-pin-zoom","map-multi-stop","lower-third-minimal","transition-circle","transition-blinds","live-badge","bokeh-loop","edu-timeline"].map(asset),"#motion")}
+   <section><div class="sec-h"><h2>Browse by category</h2><a href="#motion">All motion graphics</a></div>
+    <div class="tiles">${MCATS.map(c=>{const list=A.filter(a=>a.c===c);return `<a class="tile" href="#browse-${slug(c)}"><img src="${list[0].poster}" alt="" loading="lazy"><div><b>${c}</b><small>${list.length} ${list.length===1?"asset":"assets"}</small></div></a>`}).join("")}</div></section>
+   ${row("Free to download",A.filter(a=>a.tier==="free"),"#motion")}
+   ${row("Backgrounds and loops",A.filter(a=>a.c==="Backgrounds"),"#browse-backgrounds")}
+   ${row("Maps and travel",A.filter(a=>a.c==="Maps"),"#browse-maps")}
+   ${row("For lessons and explainers",A.filter(a=>a.c==="Education"),"#browse-education")}
+   ${row("Lower thirds and titles",A.filter(a=>a.c==="Lower thirds"||a.c==="Titles"),"#browse-lowerthirds")}
+  </div>
+  <section class="teaser"><div class="wrap"><h2>Unlimited downloads from $9.99 a month</h2><p class="sub">Start free with 5 downloads a month. Upgrade for every animation and a commercial license.</p>
+   <div class="plans" style="text-align:left">${PLANS.map(p=>`<div class="plan ${p.hot?"hot":""}">${p.hot?'<span class="badge">Most popular</span>':""}<h2>${p.name}</h2><p class="price">${p.m?"$"+p.m:"Free"}${p.m?"<span> /month</span>":""}</p>${feats(p.f.slice(0,3))}</div>`).join("")}</div>
+   <a class="btn red" href="#pricing" style="margin-top:40px">Compare plans</a></div></section>`}
+
+let bt="all";
+function browse(kind,cat){const cats=kind==="footage"?FCATS:MCATS;const name=cat?[...MCATS,...FCATS].find(c=>slug(c)===cat):null;
+  const title=name||"All animations";
+  const sub=kind==="footage"?"Real clips you can cut into your videos.":"Animations for YouTube videos, reels and lessons. Previews are free; download with your plan.";
+  return `<div class="wrap page"><div class="crumbs"><a href="#home">Home</a><span>/</span><a href="#motion">Animations</a>${name?`<span>/</span><span>${name}</span>`:""}</div>
+  <h1 class="h-xl">${title}</h1><p class="sub">${sub}</p>
+  <div class="toolbar"><div class="chips">${["All",...cats].map(c=>`<a class="chip ${(cat||"all")===(c==="All"?"all":slug(c))?"on":""}" href="${c==="All"?"#"+kind:"#browse-"+slug(c)}">${c}${c!=="All"?` <span style="opacity:.6">${catCount(c)}</span>`:""}</a>`).join("")}</div>
+  <div class="chips">${["all","free","pro","premium"].map(t=>`<button class="chip ${bt===t?"on":""}" data-tier="${t}">${t==="all"?"All plans":tierName(t)}</button>`).join("")}</div></div>
+  <div id="results" style="margin-top:36px"></div></div>`}
+function results(kind,cat){const l=A.filter(a=>a.type===(kind==="footage"?"footage":"motion")&&(!cat||slug(a.c)===cat)&&(bt==="all"||a.tier===bt));
+  return l.length?`<div class="grid">${l.map(card).join("")}</div>`:`<div class="empty">Nothing here with these filters yet.</div>`}
+
+function detail(a){const u=me(),ok=can(u,a.tier),saved=u&&u.saved.includes(a.id),kind=a.type==="motion"?"motion":"footage";
+  const rel=A.filter(x=>x.id!==a.id&&x.c===a.c),more=A.filter(x=>x.id!==a.id&&x.type===a.type&&x.c!==a.c).slice(0,8);
+  const left=u&&u.plan==="free"?FREE_LIMIT-usedThisMonth(u):null;
+  const dl=a.formats.map(f=>{const fLocked=!ok||(f.k!=="mp4"&&u&&u.plan==="free");
+    return `<button class="dlbtn ${fLocked?"locked":""}" data-fmt="${f.k}"><span><b>${f.label}</b><small>${f.note}</small></span><span class="go">${fLocked?I.lock:I.dl}</span></button>`}).join("");
+  return `<div class="wrap page"><div class="crumbs"><a href="#motion">Animations</a><span>/</span><a href="#browse-${slug(a.c)}">${a.c}</a></div>
+  <div class="detail"><div>
+   <div class="stage${a.vert?" vert":""}" id="stage"><video id="pv" src="${a.file}" poster="${a.poster}" autoplay muted loop playsinline controls></video>${ok?"":`<div class="wm"><span>VIDRAVO PREVIEW</span></div>`}</div>
+   ${a.overlay?`<div class="view-tabs" role="group" aria-label="Preview background"><button class="on" data-view="mp4">Preview</button><button data-view="alpha">Transparent</button><button data-view="green">Green screen</button></div>`:""}
+   <p style="color:var(--dim);font-size:14px;margin:16px 0 0">${esc(a.desc)}</p>
+   <div class="tags">${a.tags.map(t=>`<a href="#find-${t.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}">${esc(t)}</a>`).join("")}</div>
+   ${custHTML(a)}
+  </div>
+  <aside class="panel side"><span class="tier ${a.tier}" style="position:static;display:inline-block">${tierName(a.tier)}</span>
+   <h1>${esc(a.t)}</h1><p>Animation · ${a.c}</p>
+   <dl class="specs"><dt>Resolution</dt><dd>${a.res}</dd><dt>Frame rate</dt><dd>${a.fps} fps</dd><dt>Duration</dt><dd>${a.d.toFixed(1)} s</dd>${a.type==="motion"?`<dt>Loops</dt><dd>${a.loop?"Yes, seamless":"No"}</dd><dt>Transparent</dt><dd>${a.overlay?"Yes (WebM alpha)":"No, full frame"}</dd>`:""}<dt>Made by</dt><dd>${SRC[a.src]}</dd></dl>
+   <p class="label">Download</p>${dl}
+   <div id="dlStatus"></div>
+   ${!u?`<p class="status info">Sign in to download. Free accounts get ${FREE_LIMIT} downloads a month.</p>`:!ok?`<p class="status info">This is a ${tierName(a.tier)} asset. <a href="#checkout-${a.tier}-monthly-${a.id}" style="text-decoration:underline">Upgrade to ${tierName(a.tier)}</a> to download it.</p>`:left!==null?`<p class="status info">${Math.max(0,left)} of ${FREE_LIMIT} free downloads left this month.</p>`:""}
+   ${u?`<button class="btn" id="saveBtn" style="width:100%;margin-top:12px">${saved?"✓ Saved":"♡ Save for later"}</button>`:""}
+   <div class="license"><b>License:</b> ${a.tier==="free"?"Free for YouTube, social and personal projects.":"Commercial use included with Pro and Studio."} Don't resell or redistribute the file on its own. <a href="#license" style="text-decoration:underline">Full license</a></div>
+  </aside></div>
+  <div style="display:flex;flex-direction:column;gap:48px;margin-top:56px">${row("More "+a.c,rel)}${row("You might also like",more)}</div></div>`}
+
+function authView(mode,next){const su=mode==="signup";
+  return `<div class="wrap auth"><div class="auth-box"><h1>${su?"Create your account":"Welcome back"}</h1><p class="sub">${su?`Free forever plan with ${FREE_LIMIT} downloads a month. No card needed.`:"Sign in to download and save animations."}</p>
+  <form class="panel" id="authForm" novalidate>
+   ${su?'<label class="field">Name<input id="name" required autocomplete="name"></label>':""}
+   <label class="field">Email<input id="email" type="email" required autocomplete="email"></label>
+   <label class="field">Password<input id="password" type="password" required autocomplete="${su?"new-password":"current-password"}">${su?"<small>At least 8 characters.</small>":""}</label>
+   <p class="err" id="err" hidden></p><button class="btn red" id="authBtn">${su?"Create account":"Sign in"}</button></form>
+  <p class="swap">${su?"Already have an account? ":"New to Vidravo? "}<a href="#${su?"signin":"signup"}${next?"-"+next:""}">${su?"Sign in":"Create an account"}</a></p></div></div>`}
+
+let billing="monthly";
+function pricing(){const u=me();
+  const rowsCmp=[["Free animations","✓","✓","✓"],["Pro animations","–","✓","✓"],["Studio-exclusive animations","–","–","✓"],["Downloads per month",String(FREE_LIMIT),"Unlimited","Unlimited"],["ProRes 4444 and green-screen files","–","✓","✓"],["Customize text on templates","–","✓","✓"],["Vidravo AI video planner","–","✓","✓"],["Commercial license","–","✓","✓"],["Client work (extended license)","–","–","✓"],["Team seats","1","1","3"]];
+  return `<div class="wrap page"><div style="text-align:center;max-width:44rem;margin:0 auto"><h1 class="h-xl">Plans for every creator</h1><p class="sub">Start free. Upgrade for every animation, transparent files and a commercial license.</p>
+  <div class="toggle">${["monthly","yearly"].map(b=>`<button data-bill="${b}" class="${billing===b?"on":""}">${b[0].toUpperCase()+b.slice(1)}${b==="yearly"?"<em>Save 20%</em>":""}</button>`).join("")}</div></div>
+  <div class="plans">${PLANS.map(p=>{const amt=billing==="monthly"?p.m:p.y,cur=u&&u.plan===p.id,href=p.id==="free"?(u?"#motion":"#signup"):`#checkout-${p.id}-${billing}`;
+   return `<div class="plan ${p.hot?"hot":""}">${p.hot?'<span class="badge">Most popular</span>':""}<h2>${p.name}</h2><p class="blurb">${p.blurb}</p><p class="price">$${amt}<span>/${billing==="monthly"?"month":"year"}</span></p>${feats(p.f)}
+   ${cur?'<span class="btn" style="color:var(--dim);cursor:default">Your current plan</span>':`<a class="btn ${p.hot?"red":""}" href="${href}">${p.id==="free"?(u?"Browse free assets":"Sign up free"):"Get "+p.name}</a>`}</div>`}).join("")}</div>
+  <h2 style="margin:80px 0 16px;font-size:24px;letter-spacing:-.03em">Compare plans</h2>
+  <div class="scroll-x"><table class="cmp"><thead><tr><th></th>${PLANS.map(p=>`<th>${p.name}</th>`).join("")}</tr></thead><tbody>${rowsCmp.map(r=>`<tr>${r.map((c,i)=>i?`<td>${c}</td>`:`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+  <div class="faq"><h2>Questions</h2>${[["Can I use downloads in monetized YouTube videos?","Yes. Free assets can be used in your own YouTube and social videos. Pro and Studio add a full commercial license, so you can also use them in ads and paid products."],["What does the transparent version do?","It's a WebM file with an alpha channel. Place it on a track above your footage and only the animation shows. The green-screen MP4 is there for editors that prefer chroma key."],["Do I keep what I downloaded if I cancel?","Yes. Anything you downloaded while subscribed stays licensed for the projects you used it in."],["Can I cancel any time?","Yes. Cancel from your account page and you move back to the Free plan."]].map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join("")}</div></div>`}
+
+function licensePage(){return `<div class="wrap page" style="max-width:820px"><h1 class="h-xl">License</h1><p class="sub">Plain-language summary of what you can do with Vidravo downloads.</p>
+  <div class="panel" style="margin-top:32px;display:flex;flex-direction:column;gap:18px;font-size:15px">
+   <div><b>Free assets</b><p class="sub" style="margin-top:4px">Use them in your own videos on YouTube, Instagram, TikTok and other platforms, including monetized channels.</p></div>
+   <div><b>Pro and Studio assets</b><p class="sub" style="margin-top:4px">Commercial use is included: ads, client videos (Studio), courses and paid products.</p></div>
+   <div><b>What's not allowed</b><p class="sub" style="margin-top:4px">Reselling, sharing or uploading the files on their own, or as part of another template or stock collection.</p></div>
+   <div><b>Made by Vidravo</b><p class="sub" style="margin-top:4px">Every animation is original work by the Vidravo studio, so you get one clear license.</p></div>
+  </div></div>`}
+
+function checkout(pid,bill,nx){const u=me(),p=plan(pid)||plan("pro"),amt=bill==="yearly"?p.y:p.m;
+  return `<div class="wrap page co"><div><a href="#pricing" style="font-size:14px;color:var(--dim)">← Back to plans</a><h1 class="h-xl" style="font-size:clamp(30px,4vw,40px);margin-top:16px">Subscribe to ${p.name}</h1><p class="sub">Signed in as ${esc(u.email)}</p>
+   <p class="label" style="margin-top:40px">Billing</p><div class="opts">${["monthly","yearly"].map(b=>`<a class="opt ${bill===b?"on":""}" href="#checkout-${p.id}-${b}${nx?"-"+nx:""}"><b>${b}</b><span>$${b==="yearly"?p.y:p.m} / ${b==="monthly"?"month":"year"}${b==="yearly"?" · save 20%":""}</span></a>`).join("")}</div>
+   <p class="label" style="margin-top:40px">Included</p>${feats(p.f)}</div>
+   <aside class="panel" style="height:fit-content"><b>Order summary</b><div class="sum-row"><span style="color:var(--dim)">${p.name} (${bill})</span><span>$${amt.toFixed(2)}</span></div><div class="sum-row tot"><span>Due today</span><span>$${amt.toFixed(2)}</span></div>
+   <button class="btn red" id="pay" style="width:100%;margin-top:24px" ${u.plan===p.id?"disabled":""}>${u.plan===p.id?"You already have this plan":"Subscribe for $"+amt}</button>
+   <p class="note">Preview mode: no card is charged. The live site takes payment through Lemon Squeezy.</p></aside></div>`}
+
+function account(){const u=me(),p=plan(u.plan),d=iso=>new Date(iso).toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"}),used=usedThisMonth(u);
+  return `<div class="wrap page"><h1 class="h-xl" style="font-size:40px">Account</h1><div class="two">
+   <section class="panel"><p class="label">Profile</p><div style="display:flex;gap:16px;align-items:center;margin-top:16px"><span class="av" style="width:48px;height:48px;font-size:18px">${esc(u.name[0].toUpperCase())}</span><div style="min-width:0"><b>${esc(u.name)}</b><div style="color:var(--dim);font-size:14px;overflow:hidden;text-overflow:ellipsis">${esc(u.email)}</div></div></div>
+    <p style="color:var(--dim);font-size:14px">Member since ${d(u.createdAt)}</p><button class="btn" id="out2">Sign out</button></section>
+   <section class="panel"><p class="label">Plan</p><p style="font-size:24px;font-weight:700;margin:16px 0 0">${p.name}</p>
+    <p style="color:var(--dim);font-size:14px;margin:4px 0 0">${u.billing?`$${u.billing==="monthly"?p.m:p.y} / ${u.billing==="monthly"?"month":"year"} · renews ${d(u.renewsAt)}`:"Free plan"}</p>
+    ${u.plan==="free"?`<p style="font-size:14px;margin:16px 0 0">${used} of ${FREE_LIMIT} downloads used this month</p><div class="meter"><i style="width:${Math.min(100,used/FREE_LIMIT*100)}%"></i></div>`:`<p style="font-size:14px;margin:16px 0 0">${used} download${used===1?"":"s"} this month · unlimited</p>`}
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px"><a class="btn red" href="#pricing">${u.plan==="free"?"Upgrade":"Change plan"}</a>${u.plan!=="free"?'<button class="btn" id="cancel">Cancel subscription</button>':""}</div>
+    <div class="confirm" id="confirm" hidden><p style="margin:0">Cancel ${p.name}? You'll move to the Free plan. Files you already downloaded stay licensed.</p><div style="display:flex;gap:8px;margin-top:12px"><button class="btn red" id="yesCancel">Yes, cancel</button><button class="btn" id="noCancel">Keep ${p.name}</button></div></div></section></div>
+   <section style="margin-top:56px"><h2 style="margin:0 0 16px;font-size:20px;letter-spacing:-.03em">Download history</h2>
+   ${u.downloads.length?`<div class="scroll-x"><table class="hist"><thead><tr><th>Asset</th><th>Format</th><th>Date</th></tr></thead><tbody>${u.downloads.slice(0,30).map(x=>{const a=asset(x.id);return a?`<tr><td><a href="#asset-${a.id}" style="text-decoration:underline;text-underline-offset:3px">${esc(a.t)}</a></td><td>${esc(x.fmt)}</td><td>${d(x.at)}</td></tr>`:""}).join("")}</tbody></table></div>`:`<p class="empty" style="padding:32px;font-size:14px">Your downloads will be listed here.</p>`}</section>
+   <section style="margin-top:56px"><h2 style="margin:0 0 16px;font-size:20px;letter-spacing:-.03em">Saved</h2>${u.saved.length?`<div class="grid">${u.saved.map(asset).filter(Boolean).map(card).join("")}</div>`:`<p class="empty" style="padding:32px;font-size:14px">Save animations to find them here.</p>`}</section></div>`}
+
+let aiFmt="youtube",aiCtl=null,aiLast=null;
+function aiPage(){const u=me(),ok=u&&u.plan!=="free";
+  const sampleOut=`<div class="ai-card" style="opacity:.75"><h3>Example plan · “A 60-second reel about my trip to Japan”</h3>
+   <div class="pick"><span class="at">0:00</span><img src="${asset("title-neon").poster}" alt=""><div><b>Hook: “I spent 7 days in Japan for $900”</b><small>Kinetic text over your first shot</small></div></div>
+   <div class="pick"><span class="at">0:03</span><img src="${asset("map-flight").poster}" alt=""><div><b>Flight path with plane</b><small>Show the route from home to Tokyo</small></div></div>
+   <div class="pick"><span class="at">0:52</span><img src="${asset("follow-tap").poster}" alt=""><div><b>Follow button tap</b><small>Ask for the follow before the loop</small></div></div></div>`;
+  return `<div class="wrap page"><div class="crumbs"><a href="#home">Home</a><span>/</span><span>Vidravo AI</span></div>
+  <div class="ai-hero"><span class="ai-badge">PRO</span><h1 class="h-xl" style="margin-top:12px">Vidravo AI <span class="grad">video planner</span></h1>
+   <p class="sub" style="max-width:60ch">Describe your video and get a hook, a title, captions and the exact Vidravo animations to use, with timestamps for where each one goes.</p>
+   ${ok?`<form class="ai-form" id="aiForm"><label class="label" for="aiIn">What's your video about?</label>
+     <textarea id="aiIn" placeholder="Example: A 45-second Reel showing how I make iced coffee at home, upbeat and funny">${esc(aiLast||"")}</textarea>
+     <div class="seg" role="group" aria-label="Format">${[["youtube","YouTube video"],["shorts","YouTube Short"],["reels","Instagram Reel"],["lesson","Lesson / explainer"]].map(([k,l])=>`<button type="button" data-f="${k}" class="${aiFmt===k?"on":""}">${l}</button>`).join("")}</div>
+     <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn red" id="aiGo">✦ Plan my video</button><button class="btn" type="button" id="aiStop" hidden>Stop</button></div></form>
+     <div class="ai-out" id="aiOut"></div>`
+   :`<div class="ai-lock"><p style="font-size:17px;margin:0 0 6px">Vidravo AI comes with Pro and Studio.</p><p class="sub" style="margin:0 0 20px">${u?"Upgrade to plan videos with AI and download every animation it suggests.":"Sign in and upgrade to plan your videos with AI."}</p>
+     <a class="btn red" href="${u?"#checkout-pro-monthly":"#signup"}">${u?"Upgrade to Pro":"Create an account"}</a></div>${sampleOut}`}
+  </div></div>`}
+function bindAI(){const f=document.getElementById("aiForm");if(!f)return;const out=document.getElementById("aiOut"),go_=document.getElementById("aiGo"),stop=document.getElementById("aiStop"),inp=document.getElementById("aiIn");
+  f.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{aiFmt=b.dataset.f;f.querySelectorAll("[data-f]").forEach(x=>x.classList.toggle("on",x===b))});
+  stop.onclick=()=>aiCtl&&aiCtl.abort();
+  f.onsubmit=async e=>{e.preventDefault();const brief=inp.value.trim();if(brief.length<8){out.innerHTML='<p class="status info">Describe your video in a sentence or two.</p>';return}
+    aiLast=brief;const sample=await getSample();
+    if(!sample){out.innerHTML='<p class="status bad">The AI planner isn\'t available in this view. Open the page in claude.ai to use it.</p>';return}
+    const vertOK=aiFmt==="shorts"||aiFmt==="reels";
+    const catalog=A.filter(a=>vertOK||!a.vert).map(a=>({id:a.id,title:a.t,category:a.c,vertical:a.vert,about:a.desc})).slice(0,60);
+    const fmtName={youtube:"long-form YouTube video (16:9)",shorts:"YouTube Short (9:16, under 60 seconds)",reels:"Instagram Reel (9:16, under 90 seconds)",lesson:"educational lesson or explainer video (16:9)"}[aiFmt];
+    const prompt=`You are a video editor helping a creator plan a ${fmtName}.\nThe creator's video: """${brief.slice(0,1200)}"""\n\nPick 4 to 7 animations from this catalog (use only these ids) and say where each goes:\n${JSON.stringify(catalog)}\n\nReply with only JSON in this shape:\n{"hook":"opening line, max 12 words","title":"video title, max 70 characters","captions":["3 to 5 short on-screen text lines"],"cta":"closing call to action, max 12 words","picks":[{"id":"catalog id","at":"m:ss","why":"one short sentence on how to use it","text":"text to type into it, or empty"}]}\nOrder picks by time. Write in the creator's language.`;
+    aiCtl=new AbortController();go_.disabled=true;stop.hidden=false;
+    out.innerHTML='<div class="ai-card"><h3>Planning your video…</h3><div class="shimmer" style="width:70%"></div><div class="shimmer" style="width:90%"></div><div class="shimmer" style="width:55%"></div></div>';
+    try{const r=await sample.json(prompt,{signal:aiCtl.signal,modelTier:"default"});renderPlan(r)}
+    catch(err){const c=err&&err.code;out.innerHTML=c==="cancelled"?"":`<p class="status ${c==="not_granted"||c==="sampling_disabled"?"info":"bad"}">${{not_granted:"Allow Vidravo AI to use Claude to plan your video.",sampling_disabled:"AI isn't available on this account.",rate_limited:"Too many requests right now. Try again in a minute.",invalid_json:"The plan came back in the wrong shape. Try again.",refused:"That request couldn't be planned. Try describing it differently."}[c]||"Something went wrong. Try again."}</p>`}
+    finally{go_.disabled=false;stop.hidden=true}};
+  if(aiLast&&window.__aiPlan)renderPlan(window.__aiPlan);
+  function renderPlan(r){window.__aiPlan=r;const line=(t)=>t?`<div class="ai-line"><p>${esc(t)}</p><button class="copy" type="button" data-copy="${esc(t)}">Copy</button></div>`:"";
+    const picks=(Array.isArray(r.picks)?r.picks:[]).map(p=>({...p,a:asset(String(p.id))})).filter(p=>p.a);
+    out.innerHTML=`<div class="ai-card"><h3>Hook and title</h3>${line(r.hook)}${line(r.title)}</div>
+     <div class="ai-card"><h3>Animation timeline</h3>${picks.map(p=>`<a class="pick" href="#asset-${p.a.id}"><span class="at">${esc(p.at||"")}</span><img src="${p.a.poster}" alt=""><div><b>${esc(p.a.t)} <span class="tier ${p.a.tier}" style="position:static;margin-left:6px">${tierName(p.a.tier)}</span></b><small>${esc(p.why||"")}</small>${p.text?`<small style="color:var(--fg)">Text: “${esc(p.text)}”</small>`:""}</div></a>`).join("")||'<p class="sub">No matching animations this time. Try again with more detail.</p>'}</div>
+     <div class="ai-card"><h3>On-screen captions</h3>${(Array.isArray(r.captions)?r.captions:[]).map(line).join("")}</div>
+     <div class="ai-card"><h3>Call to action</h3>${line(r.cta)}</div>`;
+    out.querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>{const t=b.dataset.copy;navigator.clipboard.writeText(t).then(()=>{b.textContent="Copied"},()=>{b.textContent="Select and copy"})})}}
+let smP=null;const getSample=()=>smP||(smP=(async()=>{for(let i=0;i<60&&!(window.claude&&window.claude.use);i++)await new Promise(r=>setTimeout(r,100));try{return window.claude&&window.claude.use?await window.claude.use("sample"):null}catch{return null}})());
+function savedPage(){const u=me(),l=u.saved.map(asset).filter(Boolean);
+  return `<div class="wrap page"><h1 class="h-xl">Saved</h1><p class="sub">${l.length} saved asset${l.length===1?"":"s"}.</p><div style="margin-top:36px">${l.length?`<div class="grid">${l.map(card).join("")}</div>`:`<div class="empty">Nothing saved yet. Open any animation and choose “Save for later”.<br><a class="btn red" href="#motion" style="margin-top:20px">Browse animations</a></div>`}</div></div>`}
+
+function findPage(q){const s=q.toLowerCase(),l=A.filter(a=>(a.t+" "+a.c+" "+a.tags.join(" ")+" "+a.desc).toLowerCase().includes(s));
+  return `<div class="wrap page"><div class="crumbs"><a href="#home">Home</a><span>/</span><span>Search</span></div><h1 class="h-xl">“${esc(q)}”</h1><p class="sub">${l.length} result${l.length===1?"":"s"}</p><div style="margin-top:36px">${l.length?`<div class="grid">${l.map(card).join("")}</div>`:`<div class="empty">No matches. Try “subscribe”, “loop” or “quiz”.</div>`}</div></div>`}
+
+/* ---------------- navigation ---------------- */
+const nav=document.getElementById("nav"),slot=document.getElementById("authSlot");
+let cur="home",openMenu=null;
+function closeMenus(){openMenu=null;document.querySelectorAll(".drop").forEach(x=>x.remove());document.getElementById("catBtn").setAttribute("aria-expanded","false")}
+function section(){const [v,...r]=cur.split("-");if(v==="browse"){return r[0]==="overlays"||r[0]==="shortsreels"?r[0]:"motion"}if(v==="asset"){const a=asset(r.join("-"));return a?(a.type==="footage"?"footage":"motion"):v}return v}
+function renderNav(){const u=me(),sct=section();
+  document.querySelectorAll(".nl[data-r]").forEach(a=>a.classList.toggle("on",a.dataset.r===sct));
+  slot.innerHTML=u?`<div style="position:relative"><button class="who" id="who" aria-expanded="false" aria-haspopup="true"><span class="av">${esc(u.name[0].toUpperCase())}</span><span class="plan-tag ${u.plan}">${tierName(u.plan)}</span></button></div>`
+    :`<a class="ghost desk" href="#signin">Sign in</a><a class="pill-btn" href="#signup">Get Started</a>`;
+  const who=document.getElementById("who");if(who)who.onclick=e=>{e.stopPropagation();const was=openMenu==="user";closeMenus();if(was)return;openMenu="user";who.setAttribute("aria-expanded","true");
+    const used=usedThisMonth(u);
+    who.parentElement.insertAdjacentHTML("beforeend",`<div class="drop menu" role="menu"><div class="mh"><p>${esc(u.name)}</p><small>${esc(u.email)}</small><small style="margin-top:6px">${u.plan==="free"?`${used}/${FREE_LIMIT} downloads this month`:"Unlimited downloads"}</small></div>
+    <a class="mi" href="#account">${I.user}Account and downloads</a><a class="mi" href="#saved">${I.heart}Saved</a><a class="mi" href="#pricing">${I.card}${u.plan==="free"?"Upgrade plan":"Manage plan"}</a><div class="msep"></div><button class="mi" id="out">${I.out}Sign out</button></div>`);
+    document.getElementById("out").onclick=()=>{setSession(null);closeMenus();go("home")}};
+  solid()}
+function solid(){nav.classList.toggle("solid",scrollY>20||cur!=="home")}
+addEventListener("scroll",solid,{passive:true});
+document.getElementById("catBtn").onclick=e=>{e.stopPropagation();const was=openMenu==="cat";closeMenus();if(was)return;openMenu="cat";e.currentTarget.setAttribute("aria-expanded","true");
+  const featured=["map-globe","subscribe-bell","title-neon","lower-third-gradient"].map(asset);
+  document.getElementById("catWrap").insertAdjacentHTML("beforeend",`<div class="drop mega" role="menu"><div class="cats"><p class="label" style="padding:4px 12px 6px">Motion graphics</p>${MCATS.map(c=>`<a href="#browse-${slug(c)}" class="${cur==="browse-"+slug(c)?"hl":""}">${c}<small>${catCount(c)}</small></a>`).join("")}<a href="#motion" style="color:var(--fg);margin-top:6px">All animations →</a></div>
+  <div class="feat"><p>Trending</p><div class="feat-grid">${featured.map(a=>`<a href="#asset-${a.id}"><img src="${a.poster}" alt="">${esc(a.t)}</a>`).join("")}</div></div></div>`)};
+document.addEventListener("click",e=>{if(openMenu&&!e.target.closest(".drop"))closeMenus()});
+
+document.getElementById("burger").onclick=()=>{const u=me(),sct=section();
+  document.body.insertAdjacentHTML("beforeend",`<div class="drawer-bg" id="dbg"></div><aside class="drawer" id="drawer" role="dialog" aria-label="Menu">
+   <div class="dh"><img src="logo.png" alt="Vidravo"><button class="icon-btn" id="dclose" aria-label="Close menu">${I.x}</button></div>
+   <button class="dl" id="dsearch" style="border:1px solid var(--line);background:none;width:100%;color:var(--dim)">${I.search}Search animations</button>
+   <a class="dl ${sct==="home"?"on":""}" href="#home">${I.home}Home</a><a class="dl ${sct==="motion"?"on":""}" href="#motion">${I.spark}All animations</a><a class="dl ${sct==="ai"?"on":""}" href="#ai">${I.spark}Vidravo AI <span class="ai-badge">PRO</span></a><a class="dl ${sct==="pricing"?"on":""}" href="#pricing">${I.tag}Pricing</a>
+   ${u?`<a class="dl" href="#saved">${I.heart}Saved</a><a class="dl" href="#account">${I.user}Account and downloads</a>`:""}
+   <p class="dlabel">Categories</p><div class="dcats">${MCATS.map(c=>`<a class="chip" href="#browse-${slug(c)}">${c}</a>`).join("")}</div>
+   <div class="dfoot">${u?`<button class="btn" id="dout">Sign out</button>`:`<a class="btn red" href="#signup">Get Started</a><a class="btn" href="#signin">Sign in</a>`}</div></aside>`);
+  const close=()=>{document.getElementById("drawer")?.remove();document.getElementById("dbg")?.remove()};
+  document.getElementById("dbg").onclick=close;document.getElementById("dclose").onclick=close;
+  document.getElementById("drawer").addEventListener("click",e=>{if(e.target.closest("a"))close()});
+  document.getElementById("dsearch").onclick=()=>{close();openSearch()};
+  const o=document.getElementById("dout");if(o)o.onclick=()=>{close();setSession(null);go("home")}};
+
+function openSearch(){if(document.getElementById("sov"))return;closeMenus();
+  document.body.insertAdjacentHTML("beforeend",`<div class="sov" id="sov"><div class="sbox" role="dialog" aria-label="Search"><div class="sinput">${I.search}<input id="sq" placeholder="Try subscribe, lower third, loop, quiz…" autocomplete="off"><kbd>Esc</kbd></div><div class="sres" id="sres"></div><div class="shint"><span>↑ ↓ to move</span><span>Enter to open</span><span>Esc to close</span></div></div></div>`);
+  const ov=document.getElementById("sov"),q=document.getElementById("sq"),res=document.getElementById("sres");let act=0,list=[];
+  const paint=()=>{const s=q.value.trim().toLowerCase();list=A.filter(a=>!s||(a.t+" "+a.c+" "+a.tags.join(" ")+" "+a.desc).toLowerCase().includes(s)).slice(0,8);act=Math.min(act,Math.max(0,list.length-1));
+    res.innerHTML=list.length?(s?"":'<p class="label" style="padding:8px 10px">Popular</p>')+list.map((a,i)=>`<div class="sr ${i===act?"act":""}" data-i="${i}"><img src="${a.poster}" alt=""><div style="min-width:0"><b>${esc(a.t)}</b><small>${a.c} · ${tierName(a.tier)}</small></div></div>`).join("")+(s?`<div class="sr" data-all="1" style="justify-content:center;color:var(--dim);font-size:14px">See all results for “${esc(q.value)}”</div>`:""):`<p class="sempty">No matches for “${esc(q.value)}”.</p>`;
+    res.querySelectorAll(".sr").forEach(el=>el.onclick=()=>el.dataset.all?(close(),go("find-"+(q.value.trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"all"))):pick(+el.dataset.i))};
+  const close=()=>ov.remove(),pick=i=>{if(list[i]){close();go("asset-"+list[i].id)}};
+  q.oninput=()=>{act=0;paint()};
+  q.onkeydown=e=>{if(e.key==="ArrowDown"){act=Math.min(act+1,list.length-1);paint();e.preventDefault()}else if(e.key==="ArrowUp"){act=Math.max(act-1,0);paint();e.preventDefault()}else if(e.key==="Enter")pick(act);else if(e.key==="Escape")close()};
+  ov.onclick=e=>{if(e.target===ov)close()};paint();q.focus()}
+document.getElementById("openSearch").onclick=openSearch;
+addEventListener("keydown",e=>{if(e.key==="/"&&!/input|textarea/i.test(document.activeElement.tagName)){e.preventDefault();openSearch()}if(e.key==="Escape"){closeMenus();document.getElementById("drawer")?.remove();document.getElementById("dbg")?.remove()}});
+
+/* ---------------- router ---------------- */
+const app=document.getElementById("app");
+function go(h){if(location.hash==="#"+h)route();else location.hash=h}
+function route(){
+  const h=(location.hash||"#home").slice(1)||"home";cur=h;closeMenus();document.getElementById("sov")?.remove();
+  const [view,...rest]=h.split("-"),u=me();
+  if(view==="footage"){go("motion");return}
+  if(view==="motion"||view==="browse"){let kind=view,cat=null;
+    if(view==="browse"){const c=[...MCATS,...FCATS].find(c=>slug(c)===rest[0]);if(!c){go("motion");return}cat=slug(c);kind=FCATS.includes(c)?"footage":"motion"}
+    app.innerHTML=browse(kind,cat);const r=document.getElementById("results"),paint=()=>{r.innerHTML=results(kind,cat);bindPreviews(r)};paint();
+    app.querySelectorAll("[data-tier]").forEach(b=>b.onclick=()=>{bt=b.dataset.tier;app.querySelectorAll("[data-tier]").forEach(x=>x.classList.toggle("on",x===b));paint()})}
+  else if(view==="asset"&&asset(rest.join("-"))){const a=asset(rest.join("-"));app.innerHTML=detail(a);bindDetail(a)}
+  else if(view==="find"){app.innerHTML=findPage(rest.join(" "))}
+  else if(view==="signin"||view==="signup"){if(u){go(rest.length?rest.join("-"):"motion");return}app.innerHTML=authView(view,rest.join("-"));bindAuth(view,rest.join("-"))}
+  else if(view==="pricing"){app.innerHTML=pricing();app.querySelectorAll("[data-bill]").forEach(b=>b.onclick=()=>{billing=b.dataset.bill;route()})}
+  else if(view==="license"){app.innerHTML=licensePage()}
+  else if(view==="checkout"){const [pid="pro",bill="monthly",...nx]=rest;if(!u){go("signup-"+h);return}
+    const p=plan(pid)||plan("pro"),b=bill==="yearly"?"yearly":"monthly";app.innerHTML=checkout(p.id,b,nx.join("-"));
+    const pay=document.getElementById("pay");pay.onclick=async()=>{pay.disabled=true;pay.textContent="Processing…";await new Promise(r=>setTimeout(r,900));
+      const rn=new Date();b==="monthly"?rn.setMonth(rn.getMonth()+1):rn.setFullYear(rn.getFullYear()+1);
+      update(x=>({...x,plan:p.id,billing:b,renewsAt:rn.toISOString()}));
+      app.innerHTML=`<div class="wrap done"><div><span class="big-ico">${I.dl}</span><h1 class="h-xl" style="font-size:32px;margin-top:24px">You're on ${p.name}</h1><p class="sub">Every ${p.name} animation is unlocked, with unlimited downloads.</p><div style="display:flex;gap:12px;justify-content:center;margin-top:32px;flex-wrap:wrap"><a class="btn red" href="#${nx.length?"asset-"+nx.join("-"):"motion"}">${nx.length?"Back to your download":"Browse animations"}</a><a class="btn" href="#account">View account</a></div></div></div>`;renderNav();scrollTo(0,0)}}
+  else if(view==="account"){if(!u){go("signin-account");return}app.innerHTML=account();bindAccount();bindPreviews(app)}
+  else if(view==="saved"){if(!u){go("signin-saved");return}app.innerHTML=savedPage()}
+  else if(view==="ai"){app.innerHTML=aiPage();bindAI()}
+  else{cur="home";app.innerHTML=home();document.getElementById("heroCta").onclick=()=>go(me()?"motion":"signup")}
+  bindPreviews(app);renderNav();scrollTo(0,0)}
+
+const touch=matchMedia("(hover: none)").matches;
+const vio=new IntersectionObserver(es=>es.forEach(e=>{const c=e.target;if(e.intersectionRatio>=.6)c._on&&c._on();else c._off&&c._off()}),{threshold:[0,.6]});
+let cfTimer=null;
+function bindCarousel(){const items=[...document.querySelectorAll(".cf-item")],n=items.length,meta=document.getElementById("cfMeta"),dots=[...document.querySelectorAll("#cfDots button")];let i=0;
+  const wide=()=>innerWidth>640;
+  function paint(){items.forEach((el,k)=>{let o=k-i;if(o>n/2)o-=n;if(o<-n/2)o+=n;const ao=Math.abs(o);if(!wide()&&ao>2){el.style.opacity=0}
+      const w=el.offsetWidth,gap=wide()?26:12,side=wide()?.86:.84,step=w*side+gap,x=o===0?0:Math.sign(o)*(w*(1+side)/2+gap+(ao-1)*step);
+      el.style.transform=`translateX(calc(-50% + ${x}px)) scale(${o===0?1:side})`;el.style.zIndex=10-ao;el.style.opacity=ao>(wide()?3:1)?0:1;el.style.filter=ao?"brightness(.55) saturate(.85)":"none";el.style.pointerEvents=ao>3?"none":"auto";
+      el.classList.toggle("on",o===0);let v=el.querySelector("video");
+      if(o===0&&!v){v=document.createElement("video");v.src="mg/hero-"+SLIDES[k]+".mp4";v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.setAttribute("playsinline","");el.insertBefore(v,el.children[1]);v.play().catch(()=>{})}
+      else if(o!==0&&v){v.pause();v.remove()}});
+    const a=asset(SLIDES[i]);meta.innerHTML=`<b>${esc(a.t)}</b><small>${a.c} · ${tierName(a.tier)}</small><a href="#asset-${a.id}">View animation</a>`;
+    dots.forEach((d,k)=>d.classList.toggle("on",k===i))}
+  const goTo=k=>{i=(k+n)%n;paint();restart()};
+  function restart(){clearInterval(cfTimer);const bar=document.getElementById("cfBar");if(bar){bar.classList.remove("run");void bar.offsetWidth;bar.classList.add("run")}
+    cfTimer=setInterval(()=>{if(!document.getElementById("cfStage")){clearInterval(cfTimer);return}if(document.hidden)return;i=(i+1)%n;paint();const b=document.getElementById("cfBar");if(b){b.classList.remove("run");void b.offsetWidth;b.classList.add("run")}},4000)}
+  items.forEach((el,k)=>el.onclick=()=>{if(k===i)go("asset-"+SLIDES[k]);else goTo(k)});
+  document.getElementById("cfPrev").onclick=()=>goTo(i-1);document.getElementById("cfNext").onclick=()=>goTo(i+1);
+  dots.forEach(d=>d.onclick=()=>goTo(+d.dataset.d));
+  const st=document.getElementById("cfStage");let sx=null;
+  st.addEventListener("pointerdown",e=>{sx=e.clientX});st.addEventListener("pointerup",e=>{if(sx!==null&&Math.abs(e.clientX-sx)>40)goTo(i+(e.clientX<sx?1:-1));sx=null});
+  st.addEventListener("pointerenter",e=>{if(e.pointerType==="mouse"){clearInterval(cfTimer);document.getElementById("cfBar")?.classList.remove("run")}});st.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse")restart()});
+  addEventListener("resize",paint);paint();restart()}
+/* ================= Text customizer ================= */
+const CE={cl:(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),oc:x=>1-(1-x)**3,ic:x=>x**3,io:x=>x<.5?4*x**3:1-(-2*x+2)**3/2,
+  ob:(x,c=1.7)=>1+(c+1)*(x-1)**3+c*(x-1)**2,pr:(t,a,d)=>Math.max(0,Math.min(1,(t-a)/d)),lerp:(a,b,x)=>a+(b-a)*x};
+const FONT=(w,s)=>`${w} ${s}px Poppins, "Geist", system-ui, sans-serif`;
+function RR(c,x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function SH(c,b=18,y=10,a=.4){c.shadowColor=`rgba(0,0,0,${a})`;c.shadowBlur=b;c.shadowOffsetY=y;c.shadowOffsetX=0}
+function NOSH(c){c.shadowColor="transparent";c.shadowBlur=0;c.shadowOffsetY=0}
+function SC(c,k,x,y){c.translate(x,y);c.scale(k,k);c.translate(-x,-y)}
+function TW(c,t,w,s){c.font=FONT(w,s);return c.measureText(t).width}
+function TX(c,t,x,y,w,s,col,al="center"){c.font=FONT(w,s);c.fillStyle=col;c.textAlign=al;c.textBaseline="middle";c.fillText(t,x,y)}
+function CURSOR(c,x,y){c.save();SH(c,4,3,.5);c.beginPath();[[0,0],[0,40],[10,31],[18,48],[26,45],[18,28],[32,28]].forEach(([a,b],i)=>i?c.lineTo(x+a,y+b):c.moveTo(x+a,y+b));c.closePath();c.fillStyle="#fff";c.fill();NOSH(c);c.lineWidth=2.5;c.strokeStyle="#141414";c.stroke();c.restore()}
+function CHECK(c,cx,cy,s,col,w,p){const P=[[cx-s*.5,cy],[cx-s*.12,cy+s*.38],[cx+s*.55,cy-s*.4]],a=CE.cl(p*2),b=CE.cl(p*2-1);c.save();c.strokeStyle=col;c.lineWidth=w;c.lineCap="round";c.lineJoin="round";c.beginPath();c.moveTo(...P[0]);c.lineTo(CE.lerp(P[0][0],P[1][0],a),CE.lerp(P[0][1],P[1][1],a));if(b>0)c.lineTo(CE.lerp(P[1][0],P[2][0],b),CE.lerp(P[1][1],P[2][1],b));c.stroke();c.restore()}
+const BLUE="#1E7BFF",CYAN="#22D3EE",RED="#EF2B2B",YEL="#FACC15",NAVY="#0E1424",VIOLET="#8B5CF6",PINK="#F472B6";
+const initials=n=>n.trim().split(/\s+/).map(w=>w[0]||"").slice(0,2).join("").toUpperCase()||"A";
+
+const CUST={
+ "lower-third-clean":{w:1280,h:720,dur:5,fields:[["name","Name","Sarah Johnson",28],["role","Title","Founder · Bright Studio",40]],
+  draw(c,t,T,v){const x0=90,y0=520,en=CE.oc(CE.pr(t,.1,.7)),lv=CE.ic(CE.pr(t,T-.8,.6)),bar=en*(1-lv);
+   const sh=120*CE.ob(CE.pr(t,0,.45))*(1-lv);c.fillStyle=BLUE;RR(c,x0,y0+60-sh/2,12,sh,4);c.fill();
+   const pw=TW(c,v.name,"700",50)+70,rw=TW(c,v.role,"500",25)+60,w=pw*bar,w2=rw*bar;if(w<4)return;
+   c.save();SH(c,18,12,.35);c.fillStyle="rgba(255,255,255,.96)";RR(c,x0+20,y0,w,78,10);c.fill();c.fillStyle="rgba(14,20,36,.92)";RR(c,x0+20,y0+84,w2,40,8);c.fill();c.restore();
+   c.save();c.beginPath();c.rect(x0+20,y0,w,78);c.rect(x0+20,y0+84,w2,40);c.clip();const ty=18*(1-CE.oc(CE.pr(t,.45,.5)));
+   TX(c,v.name,x0+52,y0+41+ty,"700",50,NAVY,"left");TX(c,v.role,x0+50,y0+105+ty*.6,"500",25,CYAN,"left");c.restore()}},
+ "lower-third-gradient":{w:1280,h:720,dur:5,fields:[["name","Name","Daniel Kim",24],["role","Title","Fitness Coach · 1.2M followers",36]],
+  draw(c,t,T,v){const x0=90,y0=530,k=CE.oc(CE.pr(t,.1,.6))*(1-CE.ic(CE.pr(t,T-.7,.6)));const w=(Math.max(TW(c,v.name,"700",40),TW(c,v.role,"500",21))+160)*k;if(w<60)return;
+   c.save();SH(c,16,10,.4);const g=c.createLinearGradient(x0,0,x0+w,0);g.addColorStop(0,BLUE);g.addColorStop(1,VIOLET);c.fillStyle=g;RR(c,x0,y0,w,104,52);c.fill();c.restore();
+   c.save();RR(c,x0,y0,w,104,52);c.clip();c.fillStyle="#fff";c.beginPath();c.arc(x0+52,y0+52,42,0,7);c.fill();TX(c,initials(v.name),x0+52,y0+54,"700",30,BLUE);
+   const ty=14*(1-CE.oc(CE.pr(t,.45,.5)));TX(c,v.name,x0+118,y0+40+ty,"700",40,"#fff","left");TX(c,v.role,x0+120,y0+76+ty,"500",21,"rgba(230,235,255,.9)","left");c.restore()}},
+ "lower-third-minimal":{w:1280,h:720,dur:5,fields:[["name","Name","Maya Patel",26],["role","Title","Travel Photographer",40]],
+  draw(c,t,T,v){const x0=100,y=580,lv=CE.ic(CE.pr(t,T-.7,.6));c.save();SH(c,6,3,.55);const lw=Math.max(420,TW(c,v.name,"700",52)+20)*CE.oc(CE.pr(t,.1,.6))*(1-lv);
+   if(lw>1){c.fillStyle="#fff";RR(c,x0,y-2,lw,4,2);c.fill()}
+   [[v.name,"700",52,y-40,.35,1],[v.role,"500",24,y+28,.55,-1]].forEach(([s,w,sz,yy,st,up])=>{const p=CE.oc(CE.pr(t,st,.5))*(1-lv);c.save();c.beginPath();up===1?c.rect(0,0,1280,y-3):c.rect(0,y+3,1280,720);c.clip();c.globalAlpha=p;TX(c,s,x0,yy+up*24*(1-p),w,sz,"#fff","left");c.restore()});c.restore()}},
+ "social-handle":{w:1280,h:720,dur:5,fields:[["handle","Handle","@brightstudio",22],["tag","Tag","Follow for more",22]],
+  draw(c,t,T,v){const cx=640,cy=600,k=CE.ob(CE.pr(t,0,.6))*(1-CE.ic(CE.pr(t,T-.6,.6)));if(k<.01)return;const typed=v.handle.slice(0,Math.floor(v.handle.length*CE.pr(t,.6,.9)));
+   const pw=110+TW(c,v.handle,"700",44)+40,x0=cx-pw/2;c.save();SC(c,k,cx,cy);SH(c,18,12,.45);c.fillStyle="#fff";RR(c,x0,cy-48,pw,96,48);c.fill();NOSH(c);
+   c.fillStyle=RED;c.beginPath();c.arc(x0+48,cy,36,0,7);c.fill();c.fillStyle="#fff";c.beginPath();c.moveTo(x0+40,cy-16);c.lineTo(x0+40,cy+16);c.lineTo(x0+64,cy);c.fill();
+   TX(c,typed,x0+104,cy+3,"700",44,NAVY,"left");if(Math.floor(t*3)%2===0&&t<1.8){c.fillStyle=BLUE;c.fillRect(x0+106+TW(c,typed,"700",44),cy-22,4,46)}c.restore();
+   const q=CE.ob(CE.pr(t,1.6,.5))*(1-CE.ic(CE.pr(t,T-.6,.6)));if(q>.01){const tw=TW(c,v.tag,"500",24)+48;c.save();SC(c,q,cx,cy-89);SH(c,10,6,.35);c.fillStyle=BLUE;RR(c,cx-tw/2,cy-112,tw,46,23);c.fill();NOSH(c);TX(c,v.tag,cx,cy-88,"500",24,"#fff");c.restore()}}},
+ "follow-tap":{w:720,h:1280,dur:4,fields:[["handle","Handle","@maya.creates",20],["sub","Followers line","12.4K followers",24]],
+  draw(c,t,T,v){const cx=360,cy=980,q=CE.ob(CE.pr(t,.1,.5))*(1-CE.ic(CE.pr(t,T-.5,.5))),on=t>1.6,press=1-.08*Math.sin(Math.PI*CE.pr(t,1.45,.25));if(q<.01)return;
+   c.save();SC(c,q,cx,cy);SH(c,14,10,.5);c.fillStyle="rgba(20,20,24,.92)";RR(c,cx-290,cy-60,580,120,60);c.fill();NOSH(c);
+   c.fillStyle=BLUE;c.beginPath();c.arc(cx-230,cy,48,0,7);c.fill();TX(c,initials(v.handle.replace("@","")),cx-230,cy+2,"700",34,"#fff");
+   TX(c,v.handle,cx-164,cy-14,"700",28,"#fff","left");TX(c,v.sub,cx-164,cy+20,"500",20,"#b4b4be","left");
+   c.save();SC(c,press,cx+195,cy);c.fillStyle=on?"#3A3A42":RED;RR(c,cx+118,cy-32,154,64,32);c.fill();TX(c,on?"Following":"Follow",cx+195,cy+2,"700",on?22:24,"#fff");c.restore();c.restore();
+   if(t>.6&&t<T-.5){const p=CE.io(CE.pr(t,.6,.8));CURSOR(c,CE.lerp(560,cx+190,p),CE.lerp(1200,cy+4,p))}
+   if(t>1.6&&t<2.4){const b=CE.pr(t,1.6,.8);c.globalAlpha=1-b;c.font="30px serif";c.textAlign="center";for(let i=0;i<6;i++){const a=-Math.PI/2+(i-2.5)*.35,d=40+110*CE.oc(b);c.fillText("❤️",cx+195+Math.cos(a)*d,cy-40+Math.sin(a)*d)}c.globalAlpha=1}}},
+ "title-neon":{w:1280,h:720,dur:4.5,full:true,fields:[["l1","Line 1","COMING",12],["l2","Line 2","SOON",12]],
+  draw(c,t,T,v){const g=c.createLinearGradient(0,0,0,720);g.addColorStop(0,"#0B0710");g.addColorStop(1,"#120A1A");c.fillStyle=g;c.fillRect(0,0,1280,720);
+   c.fillStyle="rgba(255,255,255,.03)";for(let y=0;y<720;y+=36){const o=(y/36)%2?0:40;for(let x=-80;x<1360;x+=80){RR(c,x+o+2,y+2,76,32,3);c.fill()}}
+   let fl=1;[[.9,1],[1.15,1.22],[1.5,1.55]].forEach(([a,b])=>{if(t>a&&t<b)fl=.15});const out=1-CE.pr(t,T-.4,.4);
+   const neon=(s,y,col,a)=>{if(a<=0)return;const sz=Math.min(120,1100/Math.max(1,s.length)*1.6);c.save();c.globalAlpha=a;c.shadowColor=col;for(const b of[40,18,6]){c.shadowBlur=b;TX(c,s,640,y,"700",sz,col)}c.restore()};
+   neon(v.l1,330,PINK,CE.pr(t,.6,.2)*fl*out);neon(v.l2,460,CYAN,CE.pr(t,1.7,.15)*out)}},
+ "title-top5":{w:1280,h:720,dur:4,full:true,fields:[["top","Label","TOP",6],["num","Number","5",3],["banner","Banner","Things you need to know",32]],
+  draw(c,t,T,v){const g=c.createRadialGradient(640,360,0,640,360,900);g.addColorStop(0,"#2A0E0E");g.addColorStop(1,"#090303");c.fillStyle=g;c.fillRect(0,0,1280,720);
+   const lv=1-CE.ic(CE.pr(t,T-.5,.5));c.fillStyle="rgba(255,80,60,.07)";for(let i=0;i<14;i++){const a=i*2*Math.PI/14+t*.2;c.beginPath();c.moveTo(640,330);c.lineTo(640+Math.cos(a-.09)*1300,330+Math.sin(a-.09)*1300);c.lineTo(640+Math.cos(a+.09)*1300,330+Math.sin(a+.09)*1300);c.fill()}
+   const k=CE.ob(CE.pr(t,.2,.5),2.4)*lv;if(k>.01){c.save();SC(c,k,640,330);SH(c,18,14,.6);const a=TW(c,v.top,"700",110),b=TW(c,v.num,"700",250),gap=40,x=640-(a+gap+b)/2;
+    TX(c,v.top,x,330,"700",110,"#fff","left");TX(c,v.num,x+a+gap,320,"700",250,YEL,"left");c.restore()}
+   const q=CE.oc(CE.pr(t,.9,.6))*lv,w=Math.max(760,TW(c,v.banner,"700",36)+80)*q;if(w>2){c.save();SH(c,12,8,.5);c.fillStyle=RED;RR(c,640-w/2,500,w,76,12);c.fill();c.restore();if(q>.6){c.globalAlpha=CE.pr(t,1.2,.4);TX(c,v.banner,640,540,"700",36,"#fff");c.globalAlpha=1}}}},
+ "part-two":{w:720,h:1280,dur:3.5,fields:[["big","Big text","PART 2",10],["tag","Tag","Follow for part 3",24]],
+  draw(c,t,T,v){const cx=360,cy=330,lv=CE.ic(CE.pr(t,T-.5,.5)),st=CE.pr(t,.05,.35),sc=st<1?CE.lerp(2.4,1,CE.oc(st)):1+.03*Math.sin(Math.PI*CE.pr(t,.4,.2));
+   const sz=Math.min(104,560/Math.max(3,v.big.length)*1.9),w=Math.max(440,TW(c,v.big,"700",sz)+80);c.save();c.globalAlpha=st;SC(c,sc*(1-lv),cx,cy);c.translate(cx,cy);c.rotate(-4*Math.PI/180);c.translate(-cx,-cy);
+   SH(c,16,12,.55);c.fillStyle=RED;RR(c,cx-w/2,cy-92,w,184,22);c.fill();NOSH(c);TX(c,v.big,cx,cy+6,"700",sz,"#fff");c.restore();
+   const q=CE.ob(CE.pr(t,.9,.5))*(1-lv);if(q>.01){const tw=Math.max(400,TW(c,v.tag,"700",28)+60);c.save();SC(c,q,cx,cy+160);SH(c,10,8,.4);c.fillStyle="#fff";RR(c,cx-tw/2,cy+130,tw,60,30);c.fill();NOSH(c);TX(c,v.tag,cx,cy+161,"700",28,"#111");c.restore()}}},
+ "wait-for-it":{w:720,h:1280,dur:3.5,fields:[["text","Text","WAIT FOR IT",16]],
+  draw(c,t,T,v){const cx=360,cy=360,lv=CE.ic(CE.pr(t,T-.4,.4)),q=CE.ob(CE.pr(t,.05,.4),2.4)*(1-lv),sh=t>.5?Math.sin(t*60)*5*(.5+.5*Math.sin(t*3)):0,dots=".".repeat(1+Math.floor(t*2.5)%3);
+   const sz=Math.min(52,480/Math.max(6,v.text.length+3)*1.8),w=Math.max(560,TW(c,v.text+"...","700",sz)+90);
+   if(q>.01){c.save();SC(c,q,cx,cy);c.translate(cx,cy);c.rotate((-3+sh*.4)*Math.PI/180);c.translate(-cx,-cy);SH(c,14,10,.5);c.fillStyle=YEL;RR(c,cx-w/2,cy-70,w,140,20);c.fill();NOSH(c);
+    TX(c,v.text+dots,cx-w/2+44,cy+2,"700",sz,"#111","left");c.font="64px serif";c.textAlign="center";c.fillText("👀",cx+w/2-50,cy-74);c.restore()}
+   const p=CE.pr(t,.3,T-.9);c.fillStyle=`rgba(255,255,255,${.35*(1-lv)})`;RR(c,cx-220,cy+100,440,12,6);c.fill();c.fillStyle=`rgba(255,255,255,${1-lv})`;RR(c,cx-220,cy+100,440*p,12,6);c.fill()}},
+ "link-in-bio":{w:720,h:1280,dur:4,fields:[["text","Text","Link in bio",18]],
+  draw(c,t,T,v){const cx=360,y=1000,lv=CE.ic(CE.pr(t,T-.5,.5)),q=CE.ob(CE.pr(t,.1,.5))*(1-lv),w=Math.max(380,TW(c,v.text,"700",36)+170);
+   if(q>.01){c.save();SC(c,q,cx,y);SH(c,14,10,.45);c.fillStyle="#fff";RR(c,cx-w/2,y-46,w,92,46);c.fill();NOSH(c);c.fillStyle=BLUE;c.beginPath();c.arc(cx-w/2+48,y,30,0,7);c.fill();
+    c.strokeStyle="#fff";c.lineWidth=4;for(const dx of[-8,8]){c.beginPath();c.ellipse(cx-w/2+48+dx,y,14,8,0,0,7);c.stroke()}TX(c,v.text,cx+30,y+2,"700",36,"#111");c.restore()}
+   const b=Math.abs(Math.sin(t*Math.PI*1.6))*26;c.lineWidth=9;c.lineCap="round";c.lineJoin="round";for(let k=0;k<2;k++){const yy=1110+b+k*34;c.strokeStyle=`rgba(255,255,255,${(1-lv)*CE.pr(t,.5+k*.15,.3)*(1-.35*k)})`;c.beginPath();c.moveTo(cx-34,yy);c.lineTo(cx,yy+30);c.lineTo(cx+34,yy);c.stroke()}}},
+ "captions-pop":{w:720,h:1280,dur:4.5,fields:[["text","Caption","THIS IS HOW YOU GROW FAST ON SHORTS AND REELS",80]],
+  draw(c,t,T,v){const words=v.text.toUpperCase().split(/\s+/).filter(Boolean);if(!words.length)return;const groups=[];for(let i=0;i<words.length;i+=3)groups.push(words.slice(i,i+3));
+   const seg=T/groups.length,gi=Math.min(Math.floor(t/seg),groups.length-1),lt=t-gi*seg,g=groups[gi],per=Math.max(.05,(seg-.3)/g.length),k=Math.min(Math.floor(lt/per),g.length-1);
+   let sz=64;const sp=22;let ws=g.map(w=>TW(c,w,"700",sz)),tot=ws.reduce((a,b)=>a+b,0)+sp*(g.length-1);if(tot>640){sz=Math.floor(sz*640/tot);ws=g.map(w=>TW(c,w,"700",sz));tot=ws.reduce((a,b)=>a+b,0)+sp*(g.length-1)}
+   let x=360-tot/2;g.forEach((w,i)=>{const cx=x+ws[i]/2;if(i<=k){const pop=i===k?CE.ob(CE.pr(lt-i*per,0,.18),2.5):1;c.save();if(i===k)SC(c,.7+.3*pop,cx,860);c.font=FONT("700",sz);c.textAlign="center";c.textBaseline="middle";c.lineJoin="round";c.lineWidth=14;c.strokeStyle="#000";c.strokeText(w,cx,860);c.fillStyle=i===k?YEL:"#fff";c.fillText(w,cx,860);c.restore()}x+=ws[i]+sp})}},
+ "reply-comment":{w:720,h:1280,dur:4,fields:[["user","Username","sam_creates",20],["comment","Comment","How did you make this edit? 😍",40]],
+  draw(c,t,T,v){const x0=70,y0=380,q=CE.ob(CE.pr(t,.1,.55))*(1-CE.ic(CE.pr(t,T-.5,.5)));if(q<.01)return;const w=Math.max(520,TW(c,v.comment,"700",28)+140);
+   c.save();SC(c,q,x0+60,y0+190);SH(c,16,10,.4);c.fillStyle="#fff";RR(c,x0,y0,w,170,22);c.fill();c.beginPath();c.moveTo(x0+40,y0+168);c.lineTo(x0+80,y0+168);c.lineTo(x0+34,y0+206);c.fill();NOSH(c);
+   c.fillStyle=VIOLET;c.beginPath();c.arc(x0+50,y0+50,28,0,7);c.fill();TX(c,(v.user[0]||"U").toUpperCase(),x0+50,y0+52,"700",28,"#fff");
+   TX(c,`Reply to ${v.user}'s comment`,x0+96,y0+38,"500",21,"#6B7280","left");const s=[...v.comment],n=Math.floor(s.length*CE.pr(t,.6,1.2));TX(c,s.slice(0,n).join(""),x0+96,y0+82,"700",28,"#111","left");
+   TX(c,"2,431 likes",x0+96,y0+132,"500",18,"#9CA3AF","left");c.restore()}},
+ "notify-milestone":{w:720,h:1280,dur:4.5,fields:[["app","App name","CREATOR STUDIO",20],["title","Title","You hit 10,000 subscribers!",34],["body","Message","Thank you for the support",36]],
+  draw(c,t,T,v){const cx=360,y=CE.lerp(-140,70,CE.ob(CE.pr(t,.1,.55),1.2))-220*CE.ic(CE.pr(t,T-.6,.45));c.save();SH(c,18,10,.35);c.fillStyle="rgba(245,245,247,.96)";RR(c,cx-320,y,640,128,30);c.fill();NOSH(c);
+   c.fillStyle=RED;RR(c,cx-296,y+24,80,80,20);c.fill();c.fillStyle="#fff";c.beginPath();c.moveTo(cx-266,y+46);c.lineTo(cx-266,y+82);c.lineTo(cx-236,y+64);c.fill();
+   TX(c,v.app.toUpperCase(),cx-196,y+40,"500",18,"#6B7280","left");TX(c,"now",cx+296,y+40,"500",18,"#6B7280","right");TX(c,v.title,cx-196,y+72,"700",25,"#111","left");TX(c,v.body,cx-196,y+102,"400",21,"#374151","left");c.restore();
+   if(t>1&&t<3.2){const b=CE.pr(t,1,2.2);c.globalAlpha=1-b**3;c.font="52px serif";c.textAlign="center";["🎉","🎊","✨","🥳","🎉","✨"].forEach((e,i)=>c.fillText(e,cx+(i-2.5)*110*(.4+CE.oc(b)),y+170+520*b*b));c.globalAlpha=1}}},
+ "title-reveal":{w:1280,h:720,dur:5,full:true,fields:[["chapter","Small label","CHAPTER 03",18],["title","Title","How Volcanoes Work",28],["sub","Subtitle","Magma, pressure and the science of eruptions",56]],
+  draw(c,t,T,v){const g=c.createLinearGradient(0,0,0,720);g.addColorStop(0,"#130B2E");g.addColorStop(1,"#061226");c.fillStyle=g;c.fillRect(0,0,1280,720);
+   [[300,220,220,"rgba(139,92,246,.35)"],[1000,520,260,"rgba(30,123,255,.35)"],[980,160,140,"rgba(244,114,182,.3)"]].forEach(([x,y,r,col],i)=>{const gg=c.createRadialGradient(x+Math.sin(t*.6+i)*30,y,0,x,y,r*1.6);gg.addColorStop(0,col);gg.addColorStop(1,"rgba(0,0,0,0)");c.fillStyle=gg;c.fillRect(0,0,1280,720)});
+   const lv=CE.ic(CE.pr(t,T-.7,.7));c.globalAlpha=CE.pr(t,.2,.5)*(1-lv);c.font=FONT("500",26);c.letterSpacing="10px";TX(c,v.chapter,640,250,"500",26,"#B4C8FF");c.letterSpacing="0px";c.globalAlpha=1;
+   const words=v.title.split(/\s+/);let sz=96;let ws=words.map(w=>TW(c,w,"700",sz)),tot=ws.reduce((a,b)=>a+b,0)+28*(words.length-1);if(tot>1160){sz=Math.floor(sz*1160/tot);ws=words.map(w=>TW(c,w,"700",sz));tot=ws.reduce((a,b)=>a+b,0)+28*(words.length-1)}
+   c.save();c.beginPath();c.rect(0,290,1280,130);c.clip();let x=640-tot/2;words.forEach((w,i)=>{const p=CE.oc(CE.pr(t,.45+i*.14,.7));TX(c,w,x,360+90*(1-p)+60*lv,"700",sz,"#fff","left");x+=ws[i]+28});c.restore();
+   const uw=420*CE.oc(CE.pr(t,1.2,.8))*(1-lv);c.fillStyle=CYAN;RR(c,640-uw/2,440,uw,8,4);c.fill();c.globalAlpha=CE.pr(t,1.5,.6)*(1-lv);TX(c,v.sub,640,492,"400",26,"#C8D2EB");c.globalAlpha=1}}
+};
+
+/* ---- preview + export ---- */
+let custRAF=null,custBG="studio";
+function custHTML(a){const T=CUST[a.id];if(!T)return"";const u=me(),ok=can(u,a.tier)&&u.plan!=="free";
+  return `<section class="cust" id="cust"><div class="cust-h"><h2>Customize text</h2><span class="ai-badge">PRO</span></div>
+   <p class="sub" style="margin:4px 0 16px">Type your own text and watch it animate. Export it ready for your editor.</p>
+   <div class="cust-grid"><div class="cust-stage ${T.h>T.w?"vert":""} bg-${T.full?"full":custBG}" id="custStage"><canvas id="custCv" width="${T.w}" height="${T.h}"></canvas></div>
+   <div class="cust-side">${T.fields.map(([k,l,d,m])=>`<label class="field">${l}<input id="cf-${k}" data-k="${k}" value="${esc(d)}" maxlength="${m}"></label>`).join("")}
+    ${T.full?"":`<p class="label" style="margin-top:6px">Preview background</p><div class="seg" id="custBg">${[["studio","Studio"],["checker","Transparent"],["green","Green"]].map(([k,l])=>`<button type="button" data-bg="${k}" class="${custBG===k?"on":""}">${l}</button>`).join("")}</div>`}
+    <div class="cust-ex">${ok?`<button class="btn red" id="exPng">${T.full?"Export PNG sequence (.zip)":"Export transparent PNG sequence (.zip)"}</button><button class="btn" id="exVid">${T.full?"Export video":"Export green-screen video"}</button>`
+      :`<a class="btn red" href="${u?`#checkout-pro-monthly-${a.id}`:`#signin-asset-${a.id}`}">${u?"Upgrade to Pro to export":"Sign in to export"}</a>`}</div>
+    <div id="exStatus"></div>
+    <p class="note">PNG sequence: Premiere Pro, After Effects, DaVinci Resolve. Video: CapCut, Canva, phone editors.</p></div></div></section>`}
+function custVals(){const v={};document.querySelectorAll("[data-k]").forEach(i=>v[i.dataset.k]=i.value.trim()||i.defaultValue);return v}
+function bindCust(a){const T=CUST[a.id];if(!T)return;const cv=document.getElementById("custCv"),c=cv.getContext("2d"),st=document.getElementById("custStage");let t0=performance.now();
+  cancelAnimationFrame(custRAF);const loop=now=>{if(!document.body.contains(cv))return;const t=((now-t0)/1000)%(T.dur+.6);c.clearRect(0,0,T.w,T.h);T.draw(c,Math.min(t,T.dur-.001),T.dur,custVals());custRAF=requestAnimationFrame(loop)};
+  (document.fonts?document.fonts.load("700 40px Poppins").catch(()=>{}):Promise.resolve()).then(()=>{custRAF=requestAnimationFrame(loop)});
+  document.querySelectorAll("#custBg [data-bg]").forEach(b=>b.onclick=()=>{custBG=b.dataset.bg;st.className=`cust-stage ${T.h>T.w?"vert":""} bg-${custBG}`;document.querySelectorAll("#custBg [data-bg]").forEach(x=>x.classList.toggle("on",x===b))});
+  document.querySelectorAll("[data-k]").forEach(i=>i.oninput=()=>{t0=performance.now()});
+  const say=(cls,m)=>document.getElementById("exStatus").innerHTML=`<p class="status ${cls}">${m}</p>`;
+  const save=async(blob,name)=>{const ns=await getDl();if(ns){try{await ns.save({filename:name,data:blob});return true}catch(e){say(e&&e.code==="declined"?"info":"bad",e&&e.code==="declined"?"Export cancelled.":"The file couldn't be saved. Try again.");return false}}
+    const l=document.createElement("a");l.href=URL.createObjectURL(blob);l.download=name;document.body.append(l);l.click();l.remove();return true};
+  const log=fmt=>update(x=>({...x,downloads:[{id:a.id,fmt:"Custom · "+fmt,at:new Date().toISOString()},...x.downloads].slice(0,200)}));
+  const png=document.getElementById("exPng");if(png)png.onclick=async()=>{png.disabled=true;const v=custVals(),n=Math.round(T.dur*25),oc=document.createElement("canvas");oc.width=T.w;oc.height=T.h;const x=oc.getContext("2d"),files=[];
+    try{for(let i=0;i<n;i++){x.clearRect(0,0,T.w,T.h);T.draw(x,i/25,T.dur,v);const b=await new Promise(r=>oc.toBlob(r,"image/png"));files.push([`${a.id}_${String(i).padStart(4,"0")}.png`,new Uint8Array(await b.arrayBuffer())]);if(i%10===0)say("info",`Rendering frame ${i+1} of ${n}…`)}
+      const zip=makeZip(files);if(await save(zip,`vidravo-${a.id}-custom-png.zip`)){log("PNG sequence");say("ok",`Exported ${n} frames at 25 fps. Import the folder as an image sequence.`)}}
+    catch(e){say("bad","Export failed. Try again.")}finally{png.disabled=false}};
+  const vid=document.getElementById("exVid");if(vid)vid.onclick=async()=>{if(!window.MediaRecorder){say("bad","This browser can't record video. Use the PNG sequence instead.");return}
+    vid.disabled=true;const v=custVals(),oc=document.createElement("canvas");oc.width=T.w;oc.height=T.h;const x=oc.getContext("2d");
+    const mime=["video/mp4;codecs=avc1.42E01E","video/mp4","video/webm;codecs=vp9","video/webm"].find(m=>MediaRecorder.isTypeSupported(m))||"";const ext=mime.includes("mp4")?"mp4":"webm";
+    const draw=t=>{x.fillStyle="#00B140";x.fillRect(0,0,T.w,T.h);if(T.full)x.clearRect(0,0,T.w,T.h);T.draw(x,t,T.dur,v)};draw(0);
+    const rec=new MediaRecorder(oc.captureStream(25),mime?{mimeType:mime,videoBitsPerSecond:8e6}:{videoBitsPerSecond:8e6}),chunks=[];rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+    const done=new Promise(r=>rec.onstop=r);rec.start(200);const s0=performance.now();say("info",`Recording ${T.dur}s of video…`);
+    await new Promise(res=>{const f=now=>{const t=(now-s0)/1000;if(t>=T.dur+.15){res();return}draw(Math.min(t,T.dur-.001));requestAnimationFrame(f)};requestAnimationFrame(f)});
+    rec.stop();await done;const blob=new Blob(chunks,{type:mime||"video/webm"});
+    if(await save(blob,`vidravo-${a.id}-custom${T.full?"":"-green"}.${ext}`)){log(T.full?"Video":"Green screen video");say("ok",`Exported a ${ext.toUpperCase()} video.${T.full?"":" Use your editor's chroma key on the green."}`)}vid.disabled=false}}
+/* minimal store-only ZIP */
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return b=>{let c=0xFFFFFFFF;for(let i=0;i<b.length;i++)c=t[(c^b[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0}})();
+function makeZip(files){const enc=new TextEncoder(),parts=[],cen=[];let off=0;
+  for(const [name,data] of files){const nb=enc.encode(name),crc=CRC(data),h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,crc,true);h.setUint32(18,data.length,true);h.setUint32(22,data.length,true);h.setUint16(26,nb.length,true);
+    parts.push(h.buffer,nb,data);const cd=new DataView(new ArrayBuffer(46));cd.setUint32(0,0x02014b50,true);cd.setUint16(4,20,true);cd.setUint16(6,20,true);cd.setUint32(16,crc,true);cd.setUint32(20,data.length,true);cd.setUint32(24,data.length,true);cd.setUint16(28,nb.length,true);cd.setUint32(42,off,true);
+    cen.push(cd.buffer,nb);off+=30+nb.length+data.length}
+  const cs=cen.reduce((s,p)=>s+(p.byteLength||p.length),0),end=new DataView(new ArrayBuffer(22));end.setUint32(0,0x06054b50,true);end.setUint16(8,files.length,true);end.setUint16(10,files.length,true);end.setUint32(12,cs,true);end.setUint32(16,off,true);
+  return new Blob([...parts,...cen,end.buffer],{type:"application/zip"})}
+
+function bindPreviews(root){root.querySelectorAll("[data-prev]:not([data-b])").forEach(el=>{el.dataset.b=1;const a=asset(el.dataset.prev),th=el.querySelector(".thumb");let v=null;
+  const on=()=>{if(v)return;v=document.createElement("video");v.src=a.file;v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute("playsinline","");v.setAttribute("muted","");th.insertBefore(v,th.children[1]);v.play().catch(()=>{})};
+  const off=()=>{if(v){v.pause();v.remove();v=null}};
+  if(touch){el._on=on;el._off=off;vio.observe(el);return}
+  el.addEventListener("mouseenter",on);el.addEventListener("mouseleave",off);el.addEventListener("focus",on);el.addEventListener("blur",off)})}
+const alphaOK=(()=>{const ua=navigator.userAgent;return !(/iPhone|iPad|iPod/.test(ua)||(/Safari\//.test(ua)&&!/Chrome|Chromium|CriOS|Edg|Firefox|FxiOS/.test(ua)))})();
+
+function bindDetail(a){bindCust(a);
+  const mb=app.querySelector('[data-fmt="mov"]');if(mb){const f=a.formats.find(x=>x.k==="mov");fetch(f.f,{method:"HEAD"}).then(r=>{if(!r.ok)mb.remove()}).catch(()=>mb.remove())}const st=document.getElementById("dlStatus"),pv=document.getElementById("pv"),stage=document.getElementById("stage");
+  pv.play().catch(()=>{});
+  app.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{app.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("on",x===b));
+    const f=a.formats.find(f=>f.k===b.dataset.view),al=b.dataset.view==="alpha";stage.classList.toggle("checker",al);
+    document.getElementById("alphaNote")?.remove();
+    if(al&&!alphaOK){pv.src=a.formats.find(x=>x.k==="green").f;stage.insertAdjacentHTML("afterend",`<p id="alphaNote" class="status info">Safari and iPhone can't preview transparent video, so you're seeing the green-screen version. The transparent file still downloads and works in your editor.</p>`)}else pv.src=f.f;
+    pv.play().catch(()=>{})});
+  const sb=document.getElementById("saveBtn");if(sb)sb.onclick=()=>{update(x=>({...x,saved:x.saved.includes(a.id)?x.saved.filter(i=>i!==a.id):[a.id,...x.saved]}));sb.textContent=me().saved.includes(a.id)?"✓ Saved":"♡ Save for later"};
+  const say=(cls,msg)=>{st.innerHTML=`<p class="status ${cls}">${msg}</p>`};
+  app.querySelectorAll("[data-fmt]").forEach(b=>b.onclick=async()=>{const u=me(),f=a.formats.find(x=>x.k===b.dataset.fmt);
+    if(!u){go("signin-asset-"+a.id);return}
+    if(!can(u,a.tier)){go(`checkout-${a.tier}-monthly-${a.id}`);return}
+    if(f.k!=="mp4"&&u.plan==="free"){say("info",`Transparent and green-screen files come with Pro. <a href="#checkout-pro-monthly-${a.id}" style="text-decoration:underline">Upgrade to Pro</a>.`);return}
+    if(u.plan==="free"&&usedThisMonth(u)>=FREE_LIMIT){say("bad",`You've used all ${FREE_LIMIT} free downloads this month. <a href="#checkout-pro-monthly-${a.id}" style="text-decoration:underline">Go unlimited with Pro</a>.`);return}
+    dlNS=await getDl();
+    if(!dlNS){const l=document.createElement("a");l.href=f.f;l.download=`vidravo-${a.id}${f.k==="mp4"?"":"-"+f.k}.${f.ext}`;document.body.append(l);l.click();l.remove();
+      update(x=>({...x,downloads:[{id:a.id,fmt:f.label,at:new Date().toISOString()},...x.downloads].slice(0,200)}));say("ok",`Downloading ${f.label}.`);return}
+    b.disabled=true;const go_=b.querySelector(".go"),old=go_.innerHTML;go_.textContent="…";
+    try{const r=await fetch(f.f);if(!r.ok)throw new Error("fetch");const blob=await r.blob();
+      await dlNS.save({filename:`vidravo-${a.id}${f.k==="mp4"?"":"-"+f.k}.${f.ext}`,data:blob});
+      update(x=>({...x,downloads:[{id:a.id,fmt:f.label,at:new Date().toISOString()},...x.downloads].slice(0,200)}));
+      const nu=me();say("ok",`Saved ${f.label}.${nu.plan==="free"?` ${FREE_LIMIT-usedThisMonth(nu)} free downloads left this month.`:""}`);toast("Download saved")}
+    catch(e){const c=e&&e.code;say(c==="declined"?"info":"bad",c==="declined"?"Download cancelled.":c==="rate_limited"?"Another download is waiting for your answer. Try again in a moment.":"That download didn't go through. Try again.")}
+    finally{b.disabled=false;go_.innerHTML=old}})}
+
+function bindAuth(mode,next){const f=document.getElementById("authForm"),err=document.getElementById("err"),btn=document.getElementById("authBtn");
+  const fail=m=>{err.textContent=m;err.hidden=false;btn.disabled=false;btn.textContent=mode==="signup"?"Create account":"Sign in"};
+  f.onsubmit=async e=>{e.preventDefault();err.hidden=true;const email=document.getElementById("email").value.trim().toLowerCase(),pw=document.getElementById("password").value;
+    if(!/^\S+@\S+\.\S+$/.test(email))return fail("Enter a valid email address.");btn.disabled=true;btn.textContent="Please wait…";
+    const hp=await hash(pw),all=users();
+    if(mode==="signup"){const name=document.getElementById("name").value.trim();if(!name)return fail("Enter your name.");if(pw.length<8)return fail("Use at least 8 characters for your password.");
+      if(all[email])return fail("An account with this email already exists. Sign in instead.");
+      all[email]={name,email,ph:hp,plan:"free",billing:null,renewsAt:null,saved:[],downloads:[],createdAt:new Date().toISOString()};sset("vidravo.users2",all)}
+    else if(!all[email]||all[email].ph!==hp)return fail("Email or password is incorrect.");
+    setSession(email);go(next||"motion")}}
+function bindAccount(){document.getElementById("out2").onclick=()=>{setSession(null);go("home")};
+  const c=document.getElementById("cancel"),box=document.getElementById("confirm");if(c){c.onclick=()=>{box.hidden=false;c.hidden=true};
+   document.getElementById("noCancel").onclick=()=>{box.hidden=true;c.hidden=false};
+   document.getElementById("yesCancel").onclick=()=>{update(x=>({...x,plan:"free",billing:null,renewsAt:null}));route()}}}
+addEventListener("hashchange",route);route();
+})();
+</script>
+
+</body>
+</html>
